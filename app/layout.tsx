@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Audiowide  } from "next/font/google";
 import "./globals.css";
+import Header from "../components/header/Header";
 
 const audiowide = Audiowide({
   subsets: ["latin"],
@@ -19,6 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Header/>
       <body className={`${audiowide.className} antialiased`}>{children}</body>
     </html>
   );
