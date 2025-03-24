@@ -213,3 +213,12 @@
     @apply bg-background text-foreground;
   }
 }
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  min-height: 30vh; 
+  background-color: #0a0a0a; 
+  margin: 0;
+  overflow: hidden; 
+}
