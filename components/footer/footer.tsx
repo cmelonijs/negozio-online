@@ -4,7 +4,7 @@ const Footer = () => {
       <footer className="border-t">
           <div className="p-5 flex-center gap-2">
               <h2>
-                  2025
+                  {new Date().getFullYear()}
               </h2>
               <h2>
                   Companny name
