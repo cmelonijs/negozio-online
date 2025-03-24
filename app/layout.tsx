@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Audiowide } from "next/font/google";
 import "./globals.css";
-<<<<<<< Updated upstream
-=======
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/costants";
->>>>>>> Stashed changes
 
 const audiowide = Audiowide({
   subsets: ["latin"],
