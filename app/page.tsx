@@ -1,5 +1,4 @@
 // import { Button } from "@/components/ui/button";
-import './styles/page.css'
 
 const Homepage = () => {
   return (
