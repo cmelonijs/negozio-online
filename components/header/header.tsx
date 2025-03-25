@@ -1,9 +1,12 @@
 //import Image from "next/image";
+import LightDark from "@/components/header/LightDark"
+import Shopping from "@/components/header/Shopping"
+import User from "@/components/header/User"
 
 const Header = () => {
   return (
     <div className="wrapper flex-between main-div">
-       <div className="first-div flex-initial flex-wrap">
+       <div className="first-div flex-initial flex-wrap  items-center">
         <div className="hamburger-menu self-center"></div>
         <div className="main-logo self-center"></div>
 
@@ -23,13 +26,13 @@ const Header = () => {
           </div>
         </div> */}
         </div>
-        <div className="second-div flex ">
+        <div className="second-div flex  items-center">
             <div className="filter"></div>
         </div>
-        <div className="third-div flex wrap wrapper gap-3">
-            <div className="light-dark"></div>
-            <div className="cart"></div>
-            <div className="user"></div>
+        <div className="third-div flex wrap wrapper h-full items-center gap-1">
+            <div className="light-dark"><LightDark/></div>
+            <div className="cart"><Shopping/></div>
+            <div className="user"><User/></div>
         </div>
       </div>
     
