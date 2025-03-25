@@ -1,7 +1,7 @@
 import Image from "next/image";
 const LogoDiv = () => {
     return ( 
-        <div>
+        <div className="items-center p-3rounded-md flex items-centerinline gap-1 pt-3 pr-3 pb-3 rounded-md hover:cursor-pointer hover:shadow-5">
             <a href="{/}" className="flex-start">
             <Image
               src="/logo.png"
