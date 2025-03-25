@@ -1,33 +1,38 @@
-//import Image from "next/image";
-import LightDark from "@/components/header/LightDark"
-import Shopping from "@/components/header/Shopping"
-import User from "@/components/header/User"
+import Shopping from "@/components/header/Shopping";
+import User from "@/components/header/User";
 import MenuButton from "./menuButton";
 import LogoDiv from "./logoDiv";
 import Search2 from "./search";
+import ModeToggle from "./mode-toggle";
 //import { Search } from "lucide-react";
 
 const Header = () => {
-    return (
-      <div className="wrapper flex items-center w-full h-[100px] px-4">
-        <div className="first-div flex items-center h-full flex-shrink-0 justify-start">
-          <div className="flex h-full items-center "><MenuButton /></div>
-          <div className="flex h-full justify-start "><LogoDiv /></div>
+  return (
+    <div className="wrapper flex items-center w-full h-[100px] px-4">
+      <div className="first-div flex items-center h-full flex-shrink-0 justify-start">
+        <div className="flex h-full items-center ">
+          <MenuButton />
         </div>
-        <div className="second-div flex items-center justify-center flex-grow">
-          <div className="filter">
-            <Search2 />
-          </div>
-        </div>
-        <div className="third-div flex h-full items-center gap-1 justify-end">
-          <div className="light-dark"><LightDark /></div>
-          <div className="cart"><Shopping /></div>
-          <div className="user"><User /></div>
+        <div className="flex h-full justify-start ">
+          <LogoDiv />
         </div>
       </div>
-    );
-  };
-  
-  export default Header;
-  
+      <div className="second-div flex items-center justify-center flex-grow">
+        <div className="filter">
+          <Search2 />
+        </div>
+      </div>
+      <div className="third-div flex h-full items-center gap-1 justify-end">
+        <ModeToggle />
+        <div className="cart">
+          <Shopping />
+        </div>
+        <div className="user">
+          <User />
+        </div>
+      </div>
+    </div>
+  );
+};
 
+export default Header;
