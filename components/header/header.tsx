@@ -2,14 +2,16 @@
 import LightDark from "@/components/header/LightDark"
 import Shopping from "@/components/header/Shopping"
 import User from "@/components/header/User"
+import MenuButton from "./menuButton";
+import LogoDiv from "./logoDiv";
+import { Search } from "lucide-react";
 
 const Header = () => {
   return (
     <div className="wrapper flex-between main-div">
-       <div className="first-div flex-initial flex-wrap  items-center">
-        <div className="hamburger-menu self-center"></div>
-        <div className="main-logo self-center"></div>
-
+       <div className="first-div flex-start">
+        <MenuButton/>
+        <LogoDiv/>
         {/*<div className="flex items-center ">
           <div className="logoTotal pt-6 gap-3 pl-6 pb-6 flex items-center">
             <Image
@@ -27,7 +29,9 @@ const Header = () => {
         </div> */}
         </div>
         <div className="second-div flex  items-center">
-            <div className="filter"></div>
+            <div className="filter">
+              <Search/>
+            </div>
         </div>
         <div className="third-div flex wrap wrapper h-full items-center gap-1">
             <div className="light-dark"><LightDark/></div>
