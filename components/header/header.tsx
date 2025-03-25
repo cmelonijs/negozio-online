@@ -4,12 +4,13 @@ import Shopping from "@/components/header/Shopping"
 import User from "@/components/header/User"
 import MenuButton from "./menuButton";
 import LogoDiv from "./logoDiv";
-import { Search } from "lucide-react";
+import Search2 from "./search";
+//import { Search } from "lucide-react";
 
 const Header = () => {
   return (
     <div className="wrapper flex-between main-div">
-       <div className="first-div flex-start">
+       <div className="first-div flex-start items-center">
         <MenuButton/>
         <LogoDiv/>
         {/*<div className="flex items-center ">
@@ -30,10 +31,11 @@ const Header = () => {
         </div>
         <div className="second-div flex  items-center">
             <div className="filter">
-              <Search/>
+                <Search2/>
+              
             </div>
         </div>
-        <div className="third-div flex wrap wrapper h-full items-center gap-1">
+        <div className="third-div flex wrapper h-full items-center gap-1">
             <div className="light-dark"><LightDark/></div>
             <div className="cart"><Shopping/></div>
             <div className="user"><User/></div>
