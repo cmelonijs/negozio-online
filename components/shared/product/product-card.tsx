@@ -1,6 +1,6 @@
 import Image from "next/image";
 import ProductPrice from "./product.price";
-import { Star } from 'lucide-react';
+import { Star } from "lucide-react";
 
 import {
   Card,
@@ -10,14 +10,11 @@ import {
   CardFooter,
   CardTitle,
 } from "@/components/ui/card";
+import { Product } from "@/types";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ProductCard = ({ product }: any) => {
+const ProductCard = ({ product }: { product: Product }) => {
   return (
-    <Card 
-      key={product.slug} 
-      className="w-64 h-auto shadow-md"
-    >
+    <Card key={product.slug} className="w-64 h-auto shadow-md">
       <div className="relative w-full h-48">
         <Image
           src={product.images[0]}
@@ -31,10 +28,14 @@ const ProductCard = ({ product }: any) => {
         <CardDescription>{product.description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ProductPrice value={product.price}/>
+        <ProductPrice value={product.price} />
       </CardContent>
       <CardFooter className="flex justify-center gap-1">
-        <Star/><Star/><Star/><Star/><Star/>
+        <Star />
+        <Star />
+        <Star />
+        <Star />
+        <Star />
       </CardFooter>
     </Card>
   );
