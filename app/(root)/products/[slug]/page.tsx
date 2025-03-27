@@ -1,17 +1,12 @@
 import { notFound } from "next/navigation";
-import { PrismaClient } from '@prisma/client';
 import ProductImage from '@/components/shared/product/product.images'
+import { getProductBySlug } from "@/lib/actions/products.actions";
 
-const prisma = new PrismaClient();
+export default async function ProductPage (props: { params: Promise<{ slug: string }>; }) {
+  const { slug } = await props.params;
+  const product = await getProductBySlug(slug);
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const product = await prisma.product.findFirst({
-    where: { slug: params.slug },
-  });
-
-  if (!product) {
-    return notFound();
-  }
+  if (!product) notFound();
 
   return (
     <div className="flex flex-col gap-8 md:gap-12 lg:gap-16 max-w-screen-xl m-auto px-4 md:px-8 lg:px-12 xl:px-16 py-8 md:py-12 lg:py-16 xl:py-20">
