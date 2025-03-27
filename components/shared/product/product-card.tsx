@@ -11,9 +11,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Product } from "@/types";
+import Link from "next/link";
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (
+    <Link href={`/products/${product.slug}`} passHref>
     <Card key={product.slug} className="w-64 h-auto shadow-md">
       <div className="relative w-full h-48">
         <Image
@@ -38,6 +40,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         <Star />
       </CardFooter>
     </Card>
+    </Link>
   );
 };
 
