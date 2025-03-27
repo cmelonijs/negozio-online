@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import { PrismaClient } from '@prisma/client';
+import ProductImage from '@/components/shared/product/product.images'
 
 const prisma = new PrismaClient();
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const product = await prisma.product.findUnique({
+  const product = await prisma.product.findFirst({
     where: { slug: params.slug },
   });
 
@@ -15,12 +16,12 @@ export default async function ProductPage({ params }: { params: { slug: string }
   return (
     <div className="flex flex-col gap-8 md:gap-12 lg:gap-16 max-w-screen-xl m-auto px-4 md:px-8 lg:px-12 xl:px-16 py-8 md:py-12 lg:py-16 xl:py-20">
       <section className="flex flex-col items-start gap-8 md:flex-row md:gap-4 xl:gap-6">
-        {/* Galería de imágenes */}
+        
         <div className="w-full md:w-1/2">
-        {/* Aqui va el componente de la imagen */}
+        <ProductImage value={product.images}/>
         </div>
 
-        {/* Detalles del producto */}
+        
         <div className="w-full md:w-1/2">
           <h1 className="text-3xl font-bold">{product.name}</h1>
           <p className="text-lg">{product.description}</p>
