@@ -1,4 +1,4 @@
-import { login } from '@/lib/actions/auth.actions'
+import { login } from '@/lib/actions/auth.actions';
  
 export function LoginForm() {
     
