@@ -10,6 +10,7 @@ export default function SignIn() {
         <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">Sign In</h1>
         <form className="space-y-4"
           action={async (formData) => {
+            'use server'
             const email = formData.get("email") as string;
             const password = formData.get("password") as string;
             await login({ email, password });
