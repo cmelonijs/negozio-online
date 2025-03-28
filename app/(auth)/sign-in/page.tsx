@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { login } from "@/lib/actions/auth.actions";
 import Link from "next/link";
 
 export default function SignIn() {
@@ -7,7 +8,13 @@ export default function SignIn() {
     <div className="h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-sm mx-auto bg-white p-8 rounded-lg shadow-lg space-y-6">
         <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">Sign In</h1>
-        <form className="space-y-4">
+        <form className="space-y-4"
+          action={async (formData) => {
+            const email = formData.get("email") as string;
+            const password = formData.get("password") as string;
+            await login({ email, password });
+          }}
+        >
           <Input
             name="email"
             placeholder="Email"
