@@ -1,3 +1,5 @@
+"use client";
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,7 +10,7 @@ import { useFormStatus } from "react-dom";
 import Link from "next/link";
 
 const CredentialsSignUpForm = () => {
-    const [data, action] = useActionState<{ success: boolean; message: string }>(signUpWithCredentials, {
+    const [data, action] = useActionState(signUpWithCredentials, {
         success: false,
         message: "",
       });
@@ -17,12 +19,12 @@ const CredentialsSignUpForm = () => {
     
       const callbackUrl = searchParams.get("callbackUrl") || "/";
     
-      const SignInButton = () => {
+      const SignUpButton = () => {
         const { pending } = useFormStatus();
     
         return (
           <Button disabled={pending} className="w-full" variant="default">
-            {pending ? "Signing in..." : "sign In"}
+            {pending ? "Signing up..." : "Sign up"}
           </Button>
         );
       };
@@ -80,7 +82,7 @@ const CredentialsSignUpForm = () => {
               />
             </div>
             <div>
-              <SignInButton />
+              <SignUpButton />
             </div>
             {data && !data.success && (
               <div className="text-center text-destructive">{data.message}</div>
