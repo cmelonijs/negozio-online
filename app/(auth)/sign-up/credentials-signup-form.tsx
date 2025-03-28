@@ -76,7 +76,7 @@ const CredentialsSignUpForm = () => {
               <Input
                 id="confirm-password"
                 name="confirm-password"
-                type="confirm-password"
+                type="password"
                 required
                 autoComplete="confirm-password"
               />
