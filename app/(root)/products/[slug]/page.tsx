@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import ProductImage from '@/components/shared/product/product.images'
 import { getProductBySlug } from "@/lib/actions/products.actions";
-import AddToCartForm from "@/components/shared/product/add-to-cart-form";
+import AddToCartButton from "@/components/shared/product/add-to-cart-button";
 
 
 export default async function ProductPage(props: { params: Promise<{ slug: string }>; }) {
@@ -34,7 +34,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
               </span>
             </p>
             {product.stock > 0 && (
-              <AddToCartForm productId={product.id} />
+              <AddToCartButton productId={product.id} />
             )}
           </div>
         </div>
