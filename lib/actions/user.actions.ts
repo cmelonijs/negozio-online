@@ -5,16 +5,19 @@ import { signIn, signOut } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { hash } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
+import { formatError } from "../utils";
 
-
-export async function signUpWithCredentials(prevState: unknown, formData: FormData) {
-  console.log("formData?",formData)
+export async function signUpWithCredentials(
+  prevState: unknown,
+  formData: FormData
+) {
+  console.log("formData?", formData);
   try {
     const user = signUpFormSchema.parse({
       name: formData.get("name"),
       email: formData.get("email"),
       password: formData.get("password"),
-      confirmPassword: formData.get("confirmPassword"),
+      confirmPassword: formData.get("confirm-password"),
     });
 
     const hashedPassword = await hash(user.password, 10);
@@ -26,6 +29,7 @@ export async function signUpWithCredentials(prevState: unknown, formData: FormDa
         password: hashedPassword,
       },
     });
+
     await signIn("credentials", {
       email: user.email,
       password: user.password,
@@ -35,17 +39,19 @@ export async function signUpWithCredentials(prevState: unknown, formData: FormDa
       success: true,
       message: "Signed up successfully!",
     };
+
   } catch (err) {
+    
     if (isRedirectError(err)) {
       throw err;
     }
     return {
+      
       success: false,
-      message: "Signed up error!",
+      message: formatError(err),
     };
   }
 }
-
 
 // sign in the user with credentials
 export async function signInWithCredentials(
@@ -71,7 +77,7 @@ export async function signInWithCredentials(
 
     return {
       success: false,
-      message: "Invalid email or password",
+      message: "Sign-in error. Try again. Make sure the email and password are correct",
     };
   }
 }
