@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import ProductImage from '@/components/shared/product/product.images'
 import { getProductBySlug } from "@/lib/actions/products.actions";
+import AddToCartButton from "@/components/shared/product/add-to-cart-button"
 
 
 export default async function ProductPage(props: { params: Promise<{ slug: string }>; }) {
@@ -24,7 +25,6 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
           <p className="text-lg">Revisiónes: {product.numReviews}</p>
           <p className="text-lg">Categoría: {product.category}</p>
           <p className="text-lg">Marca: {product.brand}</p>
-
           <div className="mt-6 p-4 border rounded-lg">
             <p className="text-xl font-bold mb-2">${product.price.toString()}</p>
             <p className="text-lg mb-2">
@@ -32,6 +32,10 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
                 {product.stock > 0 ? "In Stock" : "Out of Stock"}
               </span>
             </p>
+            {product.stock > 0 && (
+              <AddToCartButton productId={product.id} />
+            )}
+
           </div>
         </div>
       </section>
