@@ -7,11 +7,8 @@ import { hash } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
 import { formatError } from "../utils";
 
-export async function signUpWithCredentials(
-  prevState: unknown,
-  formData: FormData
-) {
-  console.log("formData?", formData);
+export async function signUpWithCredentials(prevState: unknown, formData: FormData) {
+
   try {
     const user = signUpFormSchema.parse({
       name: formData.get("name"),
