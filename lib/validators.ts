@@ -32,3 +32,20 @@ export const signUpFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 })
+export const cartItemSchema = z.object({
+  id: z.string().uuid(),
+  cartId: z.string().uuid(),
+  productId: z.string().uuid(),
+  quantity: z.number().int().min(1),
+});
+
+export const cartSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  sessionCartId: z.string().uuid(),
+  items: z.array(cartItemSchema), 
+  itemsPrice: z.number().min(0),
+  totalPrice: z.number().min(0),
+  shippingPrice: z.number().min(0),
+  taxPrice: z.number().min(0),
+});
