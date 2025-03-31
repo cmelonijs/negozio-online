@@ -33,12 +33,22 @@ export const signUpFormSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 })
 export const cartItemSchema = z.object({
-  id: z.string().uuid(),
-  cartId: z.string().uuid(),
-  productId: z.string().uuid(),
-  quantity: z.number().int().min(1),
-});
-
+  productId: z.string().min(1, "Product is required"),
+  name: z.string().min(1, "Name is required"),
+  slug: z.string().min(1, "Slug is required"),
+  qty: z.number().int().nonnegative("Quantity must be a positive number"),
+  image: z.string().min(1, "An image is required"),
+  price: currency,
+  });
+  export const insertCartSchema = z.object({
+    items: z.array(cartItemSchema),
+    itemsPrice: currency,
+    totalPrice: currency,
+    shippingPrice: currency,
+    taxPrice: currency,
+    sessionCartId: z.string().min(1, "Session cart ID is required"),
+    userId: z.string().optional().nullable(),
+    });
 export const cartSchema = z.object({
   id: z.string().uuid(),
   userId: z.string().uuid(),
