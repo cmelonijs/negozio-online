@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import ProductImage from '@/components/shared/product/product.images'
 import { getProductBySlug } from "@/lib/actions/products.actions";
-import AddToCartButton from "@/components/shared/product/add-to-cart-button";
 
 
 export default async function ProductPage(props: { params: Promise<{ slug: string }>; }) {
@@ -33,9 +32,6 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
                 {product.stock > 0 ? "In Stock" : "Out of Stock"}
               </span>
             </p>
-            {product.stock > 0 && (
-              <AddToCartButton productId={product.id} />
-            )}
           </div>
         </div>
       </section>
