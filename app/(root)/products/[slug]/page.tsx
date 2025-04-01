@@ -3,6 +3,7 @@ import ProductImage from "@/components/shared/product/product.images";
 import { getProductBySlug } from "@/lib/actions/products.actions";
 import AddToCartButton from "@/components/shared/product/add-to-cart-button";
 import { getMyCart } from "@/lib/actions/cart.actions";
+import QuantityComponent from "./quantity";
 
 export default async function ProductPage(props: {
   params: Promise<{ slug: string }>;
@@ -47,7 +48,7 @@ export default async function ProductPage(props: {
               </span>
             </p>
              {product.stock > 0 && (
-              <div className="flex-center">
+              <div className="flex-center flex-col gap-4">
                 <AddToCartButton
                   cart={cart}
                   item={{
@@ -59,6 +60,11 @@ export default async function ProductPage(props: {
                     image: product.images![0],
                   }}
                 />
+                <div className="quantity-div ">
+                {cart?.items?.find(i => i.productId === product.id) && (
+                  <QuantityComponent item={cart.items.find(i => i.productId === product.id)!} />
+                )}
+                </div>
               </div>
             )}
           </div>
