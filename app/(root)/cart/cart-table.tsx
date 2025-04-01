@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { addItemToCart, removeItemFormCart } from "@/lib/actions/cart.actions";
+import { toast } from "sonner";
 
 const CartTable = ({ cart }: { cart?: Cart }) => {
   const router = useRouter();
@@ -64,17 +66,17 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                         variant="outline"
                         type="button"
                         onClick={
-                          () => {}
-                          // startTransition(async () => {
-                          //   const res = await removeItemFormCart(
-                          //     item.productId
-                          //   );
-
-                          //   if (!res.success) {
-                          //     toast.error(res.message);
-                          //     return;
-                          //   }
-                          // })
+                          () => {
+                            startTransition(async () => {
+                              const res = await removeItemFormCart(
+                                item.productId
+                              );
+                              if (!res.success) {
+                                toast.error(res.message);
+                                return;
+                              }
+                            })
+                          }
                         }
                       >
                         {isPending ? (
@@ -89,15 +91,17 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                         variant="outline"
                         type="button"
                         onClick={
-                          () => {}
-                          // startTransition(async () => {
-                          //   const res = await addItemToCart(item);
-
-                          //   if (!res.success) {
-                          //     toast.error(res.message);
-                          //     return;
-                          //   }
-                          // })
+                          () => {
+                            startTransition(async () => {
+                              const res = await addItemToCart(item);
+ 
+                              if (!res.success) {
+                                toast.error(res.message);
+                                return;
+                              }
+                            })
+                           }
+                           
                         }
                       >
                         {isPending ? (
