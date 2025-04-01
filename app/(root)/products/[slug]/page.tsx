@@ -49,22 +49,24 @@ export default async function ProductPage(props: {
             </p>
              {product.stock > 0 && (
               <div className="flex-center flex-col gap-4">
-                <AddToCartButton
-                  cart={cart}
-                  item={{
-                    productId: product.id,
-                    name: product.name,
-                    slug: product.slug,
-                    price: product.price,
-                    qty: 1,
-                    image: product.images![0],
-                  }}
-                />
-                <div className="quantity-div ">
-                {cart?.items?.find(i => i.productId === product.id) && (
-                  <QuantityComponent item={cart.items.find(i => i.productId === product.id)!} />
+                {!cart?.items?.find(i => i.productId === product.id) && (
+                  <AddToCartButton
+                    cart={cart}
+                    item={{
+                      productId: product.id,
+                      name: product.name,
+                      slug: product.slug,
+                      price: product.price,
+                      qty: 1,
+                      image: product.images![0],
+                    }}
+                  />
                 )}
-                </div>
+                {cart?.items?.find(i => i.productId === product.id) && (
+                  <div className="quantity-div">
+                    <QuantityComponent item={cart.items.find(i => i.productId === product.id)!} />
+                  </div>
+                )}
               </div>
             )}
           </div>
