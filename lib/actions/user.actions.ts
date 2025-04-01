@@ -7,8 +7,10 @@ import { hash } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
 import { formatError } from "../utils";
 
-export async function signUpWithCredentials(prevState: unknown, formData: FormData) {
-
+export async function signUpWithCredentials(
+  prevState: unknown,
+  formData: FormData
+) {
   try {
     const user = signUpFormSchema.parse({
       name: formData.get("name"),
@@ -36,14 +38,11 @@ export async function signUpWithCredentials(prevState: unknown, formData: FormDa
       success: true,
       message: "Signed up successfully!",
     };
-
   } catch (err) {
-    
     if (isRedirectError(err)) {
       throw err;
     }
     return {
-      
       success: false,
       message: formatError(err),
     };
@@ -74,7 +73,8 @@ export async function signInWithCredentials(
 
     return {
       success: false,
-      message: "Sign-in error. Try again. Make sure the email and password are correct",
+      message:
+        "Sign-in error. Try again. Make sure the email and password are correct",
     };
   }
 }
@@ -82,4 +82,12 @@ export async function signInWithCredentials(
 // sign user out
 export async function signOutUser() {
   await signOut();
+}
+
+export async function getUserById(userId: string) {
+  const user = await prisma.user.findFirst({ where: { id: userId } });
+
+  if (!user) throw new Error("User not found");
+
+  return user;
 }
