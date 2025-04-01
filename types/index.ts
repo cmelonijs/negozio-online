@@ -2,6 +2,7 @@ import {
   cartItemSchema,
   insertCartSchema,
   insertProductSchema,
+  shippingAddressSchema,
 } from "@/lib/validators";
 import { z } from "zod";
 
