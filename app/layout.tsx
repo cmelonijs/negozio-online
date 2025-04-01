@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Audiowide } from "next/font/google";
+import { Fredoka } from "next/font/google";
 import "./globals.css";
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/costants";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "sonner";
 
-const audiowide = Audiowide({
+const fredoka = Fredoka({
   subsets: ["latin"],
   weight: "400",
 });
@@ -25,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${audiowide.className} antialiased`}>
+      <body className={`${fredoka.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -34,6 +35,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+      <Toaster />
       </body>
     </html>
   );

@@ -17,7 +17,7 @@ const calcPrice = (items: CartItem[]) => {
     }, 0)
   );
 
-  const shippingPrice = round2(itemsPrice < 100 ? 1 : 10);
+  const shippingPrice = round2(itemsPrice < 100 ? 10 : 1);
 
   const taxPrice = round2(0.22 * itemsPrice);
 
