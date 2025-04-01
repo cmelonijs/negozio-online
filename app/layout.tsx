@@ -3,6 +3,7 @@ import { Fredoka } from "next/font/google";
 import "./globals.css";
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/costants";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "sonner";
 
 const fredoka = Fredoka({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+      <Toaster />
       </body>
     </html>
   );

@@ -1,11 +1,14 @@
 import { notFound } from "next/navigation";
 import ProductImage from "@/components/shared/product/product.images";
 import { getProductBySlug } from "@/lib/actions/products.actions";
+import AddToCartButton from "@/components/shared/product/add-to-cart-button";
+import { getMyCart } from "@/lib/actions/cart.actions";
 
 export default async function ProductPage(props: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await props.params;
+  const cart =  await getMyCart();
   const product = await getProductBySlug(slug);
 
   if (!product) notFound();
@@ -43,13 +46,9 @@ export default async function ProductPage(props: {
                 {product.stock > 0 ? "In Stock" : "Out of Stock"}
               </span>
             </p>
-            {/* {product.stock > 0 && (
-              <AddToCartButton productId={product.id} />
-            )} */}
-
-            {/* {product.stock > 0 && (
+             {product.stock > 0 && (
               <div className="flex-center">
-                <AddToCart
+                <AddToCartButton
                   cart={cart}
                   item={{
                     productId: product.id,
@@ -61,7 +60,7 @@ export default async function ProductPage(props: {
                   }}
                 />
               </div>
-            )} */}
+            )}
           </div>
         </div>
       </section>
