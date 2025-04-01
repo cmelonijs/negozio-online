@@ -1,8 +1,9 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
-import { removeItemFormCart } from "@/lib/actions/cart.actions";
+import { addItemToCart } from "@/lib/actions/cart.actions";
 import { CartItem } from "@/types";
-import { Loader, Minus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
@@ -14,9 +15,8 @@ export default function PlusButton({ item }: { item: CartItem }) {
       variant="outline"
       type="button"
       onClick={() =>
-        //revisar pq creo q esta mal
         startTransition(async () => {
-          const res = await removeItemFormCart(item.productId);
+          const res = await addItemToCart(item);
 
           if (!res.success) {
             toast.error(res.message);
@@ -28,7 +28,7 @@ export default function PlusButton({ item }: { item: CartItem }) {
       {isPending ? (
         <Loader className="w-4 h-4 animate-spin" />
       ) : (
-        <Minus className="w-4 h-4" />
+        <Plus className="w-4 h-4" />
       )}
     </Button>
   );
