@@ -1,11 +1,12 @@
+import CheckoutSteps from "@/components/shared/checkout-steps";
 import ShippingForm from "./shipping-form";
 
 const ShippingPage = async () => {
-
   return (
-    <div className="space-y-8">
+    <>
+      <CheckoutSteps current={1} />
       <ShippingForm />
-    </div>
+    </>
   );
 };
 
