@@ -126,3 +126,35 @@ export async function changeAddress(formData: FormData) {
     };
   }
 }
+
+export async function paymentMethod(formData: FormData) {
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      message: "You must be logged in to chose a payment method",
+    };
+  }
+  
+  try {
+    const paymentMethod = {
+      paymentMethod: formData.get("paymentMethod"),
+    };
+
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { paymentMethod: paymentMethod.paymentMethod as string | null },
+    });
+
+    return {
+      success: true,
+      message: "Payment method updated successfully!",
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}

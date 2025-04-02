@@ -14,22 +14,29 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { paymentMethodSchema } from "@/lib/validators";
-
-// Lista de métodos de pago válidos
-const PAYMENT_METHODS = ["paypal", "Stripe", "cashOnDelivery"];
+import { PAYMENT_METHODS, DEFAULT_PAYMENT_METHOD } from "@/lib/costants/index";
+import { paymentMethod } from "@/lib/actions/user.actions";
 
 export default function PaymentMethodForm() {
   const form = useForm({
     resolver: zodResolver(paymentMethodSchema),
     defaultValues: {
-      type: "paypal", // Valor predeterminado
+      type: DEFAULT_PAYMENT_METHOD,
     },
   });
 
   const onSubmit = async (data: FieldValues) => {
     console.log("Selected Payment Method:", data);
+    const formData = new FormData();
+    
+    // Append the correct key for the payment method
+    formData.append("paymentMethod", data.type as string);
+  
+    await paymentMethod(formData);
     form.reset();
+    // redirect("/place-order");
   };
+  
 
   return (
     <Form {...form}>
