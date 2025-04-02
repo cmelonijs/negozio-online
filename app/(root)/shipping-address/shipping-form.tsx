@@ -3,10 +3,18 @@
 import { shippingAddressSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
-import { FieldValues, useForm } from "react-hook-form";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { z } from "zod";
 
 export default function ShippingForm() {
   const form = useForm({
@@ -27,10 +35,15 @@ export default function ShippingForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md mx-auto space-y-4 p-6 bg-white shadow-lg rounded-lg">
-        <h2 className="text-xl font-semibold text-gray-800">Shipping Address</h2>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="max-w-md mx-auto space-y-4 p-6 bg-white shadow-lg rounded-lg"
+      >
+        <h2 className="text-xl font-semibold text-gray-800">
+          Shipping Address
+        </h2>
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="fullName"
           render={({ field }) => (
@@ -38,6 +51,27 @@ export default function ShippingForm() {
               <FormLabel>Full Name</FormLabel>
               <FormControl>
                 <Input placeholder="Full Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+
+        <FormField
+          control={form.control}
+          name="fullName"
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<
+              z.infer<typeof shippingAddressSchema>,
+              "fullName"
+            >;
+          }) => (
+            <FormItem>
+              <FormLabel>Full Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter Full Name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -100,7 +134,11 @@ export default function ShippingForm() {
           )}
         />
 
-        <Button type="submit" disabled={form.formState.isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="w-full"
+        >
           {form.formState.isSubmitting ? "Submitting..." : "Submit"}
         </Button>
       </form>
