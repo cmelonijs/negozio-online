@@ -4,84 +4,106 @@ import { shippingAddressSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function ShippingForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm({
+  const form = useForm({
     resolver: zodResolver(shippingAddressSchema),
+    defaultValues: {
+      fullName: "",
+      streetAddress: "",
+      city: "",
+      postalCode: "",
+      Country: "",
+    },
   });
 
   const onSubmit = async (data: FieldValues) => {
     console.log("Form submitted:", data);
-      reset();
-    
+    form.reset();
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto space-y-4 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-xl font-semibold text-gray-800">Shipping Address</h2>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md mx-auto space-y-4 p-6 bg-white shadow-lg rounded-lg">
+        <h2 className="text-xl font-semibold text-gray-800">Shipping Address</h2>
 
-      <div className="space-y-1">
-        <input
-          {...register("fullName")}
-          type="text"
-          placeholder="Full Name"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        <FormField
+          control={form.control}
+          name="fullName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Full Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Full Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.fullName && <p className="text-sm text-red-500">{errors.fullName.message}</p>}
-      </div>
 
-      <div className="space-y-1">
-        <input
-          {...register("streetAddress")}
-          type="text"
-          placeholder="Street Address"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        <FormField
+          control={form.control}
+          name="streetAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Street Address</FormLabel>
+              <FormControl>
+                <Input placeholder="Street Address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.streetAddress && <p className="text-sm text-red-500">{errors.streetAddress.message}</p>}
-      </div>
 
-      <div className="space-y-1">
-        <input
-          {...register("city")}
-          type="text"
-          placeholder="City"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        <FormField
+          control={form.control}
+          name="city"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>City</FormLabel>
+              <FormControl>
+                <Input placeholder="City" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.city && <p className="text-sm text-red-500">{errors.city.message}</p>}
-      </div>
 
-      <div className="space-y-1">
-        <input
-          {...register("postalCode")}
-          type="text"
-          placeholder="Postal Code"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        <FormField
+          control={form.control}
+          name="postalCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Postal Code</FormLabel>
+              <FormControl>
+                <Input placeholder="Postal Code" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.postalCode && <p className="text-sm text-red-500">{errors.postalCode.message}</p>}
-      </div>
 
-      <div className="space-y-1">
-        <input
-          {...register("Country")}
-          type="text"
-          placeholder="Country"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        <FormField
+          control={form.control}
+          name="Country"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Country</FormLabel>
+              <FormControl>
+                <Input placeholder="Country" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.Country && <p className="text-sm text-red-500">{errors.Country.message}</p>}
-      </div>
 
-      <button
-        disabled={isSubmitting}
-        type="submit"
-        className="w-full py-2 text-white font-semibold bg-yellow-500 rounded-lg transition hover:bg-yellow-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-      >
-        {isSubmitting ? "Submitting..." : "Submit"}
-      </button>
-    </form>
+        <Button type="submit" disabled={form.formState.isSubmitting} className="w-full">
+          {form.formState.isSubmitting ? "Submitting..." : "Submit"}
+        </Button>
+      </form>
+    </Form>
   );
 }
