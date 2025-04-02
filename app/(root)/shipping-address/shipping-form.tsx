@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
+import { changeAddress } from "@/lib/actions/user.actions";
 
 export default function ShippingForm() {
   const form = useForm({
@@ -28,8 +29,13 @@ export default function ShippingForm() {
     },
   });
 
-  const onSubmit = async (data: FieldValues) => {
+  const onSubmit = async (data: FieldValues) => { 
     console.log("Form submitted:", data);
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value as string);
+    });
+    await changeAddress(formData);
     form.reset();
   };
 
