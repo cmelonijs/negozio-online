@@ -49,20 +49,6 @@ export default function ShippingForm() {
           Shipping Address
         </h2>
 
-        {/* <FormField
-          control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Full Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-
         <FormField
           control={form.control}
           name="fullName"
@@ -87,7 +73,14 @@ export default function ShippingForm() {
         <FormField
           control={form.control}
           name="streetAddress"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<
+              z.infer<typeof shippingAddressSchema>,
+              "streetAddress"
+            >;
+          }) => (
             <FormItem>
               <FormLabel>Street Address</FormLabel>
               <FormControl>
@@ -101,7 +94,14 @@ export default function ShippingForm() {
         <FormField
           control={form.control}
           name="city"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<
+              z.infer<typeof shippingAddressSchema>,
+              "city"
+            >;
+          }) => (
             <FormItem>
               <FormLabel>City</FormLabel>
               <FormControl>
@@ -115,7 +115,14 @@ export default function ShippingForm() {
         <FormField
           control={form.control}
           name="postalCode"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<
+              z.infer<typeof shippingAddressSchema>,
+              "postalCode"
+            >;
+          }) => (
             <FormItem>
               <FormLabel>Postal Code</FormLabel>
               <FormControl>
@@ -129,7 +136,14 @@ export default function ShippingForm() {
         <FormField
           control={form.control}
           name="Country"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<
+              z.infer<typeof shippingAddressSchema>,
+              "Country"
+            >;
+          }) => (
             <FormItem>
               <FormLabel>Country</FormLabel>
               <FormControl>
