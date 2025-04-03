@@ -158,3 +158,32 @@ export async function paymentMethod(formData: FormData) {
     };
   }
 }
+export async function getUserPaymentMethod() {
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      message: "You must be logged in to view payment methods",
+      data: null,
+    };
+  }
+  
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { paymentMethod: true },
+    });
+
+    return {
+      success: true,
+      data: user?.paymentMethod || null,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+      data: null,
+    };
+  }
+}
