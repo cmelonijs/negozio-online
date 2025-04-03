@@ -107,7 +107,7 @@ export async function changeAddress(formData: FormData) {
       streetAddress: formData.get("streetAddress"),
       city: formData.get("city"),
       postalCode: formData.get("postalCode"),
-      country: formData.get("Country"), 
+      Country: formData.get("Country"), 
     };
 
     await prisma.user.update({
@@ -123,6 +123,44 @@ export async function changeAddress(formData: FormData) {
     return {
       success: false,
       message: formatError(err),
+    };
+  }
+}
+
+export async function getUserShippingAddress() {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      message: "You must be logged in to view your shipping address",
+      data: null,
+    };
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { address: true },
+    });
+
+    if (!user?.address) {
+      return {
+        success: false,
+        message: "No shipping address found",
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      data: user.address,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+      data: null,
     };
   }
 }

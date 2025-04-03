@@ -2,7 +2,7 @@
 
 import { shippingAddressSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useEffect } from "react";
 import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
 import {
   Form,
@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { changeAddress } from "@/lib/actions/user.actions";
+import { changeAddress, getUserShippingAddress } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 
 export default function ShippingForm() {
@@ -30,6 +30,23 @@ export default function ShippingForm() {
     },
   });
 
+  useEffect(() => {
+    const fetchShippingAddress = async () => {
+      const response = await getUserShippingAddress();
+      if (response.success && response.data) {
+        form.reset(response.data as { 
+          fullName: string; 
+          streetAddress: string; 
+          city: string; 
+          postalCode: string; 
+          Country: string; 
+        }); 
+      }
+    };
+
+    fetchShippingAddress();
+  }, [form]);
+  
   const onSubmit = async (data: FieldValues) => { 
     console.log("Form submitted:", data);
     const formData = new FormData();
