@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { changeAddress } from "@/lib/actions/user.actions";
+import { redirect } from "next/navigation";
 
 export default function ShippingForm() {
   const form = useForm({
@@ -37,6 +38,7 @@ export default function ShippingForm() {
     });
     await changeAddress(formData);
     form.reset();
+    redirect("/payment-method");
   };
 
   return (
