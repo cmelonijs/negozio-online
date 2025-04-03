@@ -3,7 +3,6 @@
 import { z } from "zod";
 import { useForm, ControllerRenderProps, FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 import {
   Form,
   FormField,
@@ -16,31 +15,19 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { paymentMethodSchema } from "@/lib/validators";
 import { PAYMENT_METHODS, DEFAULT_PAYMENT_METHOD } from "@/lib/costants/index";
-import { paymentMethod, getUserPaymentMethod } from "@/lib/actions/user.actions";
+import { paymentMethod } from "@/lib/actions/user.actions";
 
-export default function PaymentMethodForm() {
-  const [isLoading, setIsLoading] = useState(true);
-  
+interface PaymentMethodFormProps {
+  initialPaymentMethod: string | null;
+}
+
+export default function PaymentMethodForm({ initialPaymentMethod }: PaymentMethodFormProps) {
   const form = useForm({
     resolver: zodResolver(paymentMethodSchema),
     defaultValues: {
-      type: DEFAULT_PAYMENT_METHOD,
+      type: initialPaymentMethod || DEFAULT_PAYMENT_METHOD,
     },
   });
-
-  useEffect(() => {
-    const fetchPaymentMethod = async () => {
-      setIsLoading(true);
-      const result = await getUserPaymentMethod();
-      
-      if (result.success && result.data) {
-        form.setValue("type", result.data);
-      }
-      setIsLoading(false);
-    };
-    
-    fetchPaymentMethod();
-  }, [form]);
 
   const onSubmit = async (data: FieldValues) => {
     console.log("Selected Payment Method:", data);
@@ -50,10 +37,6 @@ export default function PaymentMethodForm() {
   
     await paymentMethod(formData);
   };
-  
-  if (isLoading) {
-    return <div className="text-center p-4">Loading payment method...</div>;
-  }
 
   return (
     <Form {...form}>
