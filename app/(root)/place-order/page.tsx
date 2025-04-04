@@ -53,7 +53,7 @@ const PlaceorderPage = async () => {
               <p>{userAddress.fullName}</p>
               <p>
                 {userAddress.streetAddress}, {userAddress.city} <br />
-                {userAddress.postalCode}, {userAddress.country}
+                {userAddress.postalCode}, {userAddress.Country}
               </p>
               <div className="mt-3">
                 <Link href="/shipping-address">
