@@ -9,7 +9,7 @@ interface PaymentMethodFormProps {
 
 export default function OrderPaymentMethodPage({ paymentMethod }: PaymentMethodFormProps) {
     return (
-        <div className="max-w-md mx-auto space-y-4 p-6 bg-white shadow-lg rounded-lg">
+        <div className=" mx-auto space-y-4 p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold text-gray-800">Payment Method</h2>
 
             {paymentMethod ? (

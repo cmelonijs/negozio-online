@@ -6,6 +6,7 @@ import { ShippingAddress } from "@/types";
 import OrderShippingAdressPage from "./orderShippingAddress";
 import OrderProductsList from "./orderProducts";
 import { getMyCart } from "@/lib/actions/cart.actions";
+import OrderSummaryButton from "./orderPriceSummaryButton";
 
 const PaymentMethodPage = async () => {
   const session = await auth();
@@ -24,12 +25,22 @@ const PaymentMethodPage = async () => {
     }
   }
   return (
-    <>
+    <div className="space-y-6">
       <CheckoutSteps current={3} />
-      <OrderPaymentMethodPage paymentMethod={userPaymentMethod} />
-      <OrderShippingAdressPage initialShippingForm={shippingAddress || undefined} />
-      <OrderProductsList cart={cart}/>
-    </>
+      <div className="flex flex-col lg:flex-row lg:space-x-6">
+        {/* Left Column (Wider) */}
+        <div className="w-full lg:w-2/3 space-y-6">
+          <OrderPaymentMethodPage paymentMethod={userPaymentMethod} />
+          <OrderShippingAdressPage initialShippingForm={shippingAddress || undefined} />
+          <OrderProductsList cart={cart} />
+        </div>
+
+        {/* Right Column (Narrower) */}
+        <div className="w-full lg:w-1/3">
+          <OrderSummaryButton cart={cart} />
+        </div>
+      </div>
+    </div>
   );
 };
 
