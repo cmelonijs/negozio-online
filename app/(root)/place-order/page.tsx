@@ -26,7 +26,7 @@ const PaymentMethodPage = async () => {
   return (
     <>
       <CheckoutSteps current={3} />
-      <OrderPaymentMethodPage paymentMethod={userPaymentMethod} />;
+      <OrderPaymentMethodPage paymentMethod={userPaymentMethod} />
       <OrderShippingAdressPage initialShippingForm={shippingAddress || undefined} />
       <OrderProductsList cart={cart}/>
     </>
