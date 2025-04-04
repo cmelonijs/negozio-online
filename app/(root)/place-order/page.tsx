@@ -4,11 +4,14 @@ import { auth } from "@/auth";
 import OrderPaymentMethodPage from "./orderPaymentMethod";
 import { ShippingAddress } from "@/types";
 import OrderShippingAdressPage from "./orderShippingAddress";
+import OrderProductsList from "./orderProducts";
+import { getMyCart } from "@/lib/actions/cart.actions";
 
 const PaymentMethodPage = async () => {
   const session = await auth();
   const userId = session?.user?.id;
   let userPaymentMethod = null;
+  const cart = await getMyCart();
   let shippingAddress: ShippingAddress | null = null;
 
   if (userId) {
@@ -25,6 +28,7 @@ const PaymentMethodPage = async () => {
       <CheckoutSteps current={3} />
       <OrderPaymentMethodPage paymentMethod={userPaymentMethod} />;
       <OrderShippingAdressPage initialShippingForm={shippingAddress || undefined} />
+      <OrderProductsList cart={cart}/>
     </>
   );
 };
