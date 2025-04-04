@@ -127,44 +127,6 @@ export async function changeAddress(formData: FormData) {
   }
 }
 
-export async function getUserShippingAddress() {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return {
-      success: false,
-      message: "You must be logged in to view your shipping address",
-      data: null,
-    };
-  }
-
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { address: true },
-    });
-
-    if (!user?.address) {
-      return {
-        success: false,
-        message: "No shipping address found",
-        data: null,
-      };
-    }
-
-    return {
-      success: true,
-      data: user.address,
-    };
-  } catch (err) {
-    return {
-      success: false,
-      message: formatError(err),
-      data: null,
-    };
-  }
-}
-
 export async function paymentMethod(formData: FormData) {
   const session = await auth();
   
