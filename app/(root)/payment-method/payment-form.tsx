@@ -17,11 +17,15 @@ import { paymentMethodSchema } from "@/lib/validators";
 import { PAYMENT_METHODS, DEFAULT_PAYMENT_METHOD } from "@/lib/costants/index";
 import { paymentMethod } from "@/lib/actions/user.actions";
 
-export default function PaymentMethodForm() {
+interface PaymentMethodFormProps {
+  initialPaymentMethod: string | null;
+}
+
+export default function PaymentMethodForm({ initialPaymentMethod }: PaymentMethodFormProps) {
   const form = useForm({
     resolver: zodResolver(paymentMethodSchema),
     defaultValues: {
-      type: DEFAULT_PAYMENT_METHOD,
+      type: initialPaymentMethod || DEFAULT_PAYMENT_METHOD,
     },
   });
 
@@ -29,14 +33,10 @@ export default function PaymentMethodForm() {
     console.log("Selected Payment Method:", data);
     const formData = new FormData();
     
-    // Append the correct key for the payment method
     formData.append("paymentMethod", data.type as string);
   
     await paymentMethod(formData);
-    form.reset();
-    // redirect("/place-order");
   };
-  
 
   return (
     <Form {...form}>

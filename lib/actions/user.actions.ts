@@ -107,7 +107,7 @@ export async function changeAddress(formData: FormData) {
       streetAddress: formData.get("streetAddress"),
       city: formData.get("city"),
       postalCode: formData.get("postalCode"),
-      country: formData.get("Country"), 
+      Country: formData.get("Country"), 
     };
 
     await prisma.user.update({

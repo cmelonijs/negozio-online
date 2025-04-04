@@ -2,7 +2,6 @@
 
 import { shippingAddressSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
 import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
 import {
   Form,
@@ -15,13 +14,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { changeAddress } from "@/lib/actions/user.actions";
+import { changeAddress} from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
+import { startTransition } from "react";
+import router from "next/router";
 
-export default function ShippingForm() {
+
+// Define the ShippingFormProps interface
+interface ShippingFormProps {
+  initialShippingForm?: {
+    fullName: string;
+    streetAddress: string;
+    city: string;
+    postalCode: string;
+    Country: string;
+  };
+}
+
+export default function ShippingForm({ initialShippingForm }: ShippingFormProps) {
+  
   const form = useForm({
     resolver: zodResolver(shippingAddressSchema),
-    defaultValues: {
+    defaultValues: initialShippingForm || {
       fullName: "",
       streetAddress: "",
       city: "",
@@ -160,6 +174,11 @@ export default function ShippingForm() {
           type="submit"
           disabled={form.formState.isSubmitting}
           className="w-full"
+          onClick={() => {
+            startTransition(() => {
+              router.push("/payment-method");
+            });
+          }}
         >
           {form.formState.isSubmitting ? "Submitting..." : "Submit"}
         </Button>
