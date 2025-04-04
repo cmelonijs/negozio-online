@@ -14,11 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { changeAddress} from "@/lib/actions/user.actions";
+import { changeAddress } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import { startTransition } from "react";
 import router from "next/router";
-
 
 // Define the ShippingFormProps interface
 interface ShippingFormProps {
@@ -31,8 +30,9 @@ interface ShippingFormProps {
   };
 }
 
-export default function ShippingForm({ initialShippingForm }: ShippingFormProps) {
-  
+export default function ShippingForm({
+  initialShippingForm,
+}: ShippingFormProps) {
   const form = useForm({
     resolver: zodResolver(shippingAddressSchema),
     defaultValues: initialShippingForm || {
@@ -44,7 +44,7 @@ export default function ShippingForm({ initialShippingForm }: ShippingFormProps)
     },
   });
 
-  const onSubmit = async (data: FieldValues) => { 
+  const onSubmit = async (data: FieldValues) => {
     console.log("Form submitted:", data);
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
