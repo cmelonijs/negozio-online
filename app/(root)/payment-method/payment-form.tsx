@@ -11,6 +11,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { redirect } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { paymentMethodSchema } from "@/lib/validators";
@@ -83,6 +84,7 @@ export default function PaymentMethodForm({ initialPaymentMethod }: PaymentMetho
         />
 
         <Button
+        onClick={() => { redirect("/place-order") }}
           type="submit"
           disabled={form.formState.isSubmitting}
           className="w-full"
