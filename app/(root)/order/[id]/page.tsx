@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import OrderTable from "./order-tabla";
+import OrderTable from "./order-table";
 import { getOrderById } from "@/lib/actions/order.actions";
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
