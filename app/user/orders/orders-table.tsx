@@ -9,15 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {Order} from "@/types";
-
+import Pagination from "@/components/shared/pagination";
+import { Order } from "@/types";
 
 const MyOrdersTable = ({
   orders,
   totalPages,
+  currentPage,
 }: {
   orders: Order[];
   totalPages: number;
+  currentPage: number;
 }) => {
   return (
     <div>
@@ -37,7 +39,7 @@ const MyOrdersTable = ({
             <TableRow key={order.id}>
               <TableCell>{order.id}</TableCell>
               <TableCell>
-                {new Date(order.createdAt).toLocaleString()} {/* Muestra fecha y hora */}
+                {new Date(order.createdAt).toLocaleString()} {/* Show date and time */}
               </TableCell>
               <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
               <TableCell>{order.isPaid ? "Yes" : "No"}</TableCell>
@@ -51,7 +53,7 @@ const MyOrdersTable = ({
           ))}
         </TableBody>
       </Table>
-      <p className="mt-4">Total Pages: {totalPages}</p>
+      <Pagination page={currentPage} totalPages={totalPages} urlParamName="page" />
     </div>
   );
 };
