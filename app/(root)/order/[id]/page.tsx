@@ -1,15 +1,7 @@
 import { Metadata } from "next";
-import Image from "next/image";
+import OrderTable from "./order-tabla";
 import { getOrderById } from "@/lib/actions/order.actions";
 import { formatCurrency } from "@/lib/utils";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Decimal } from "@prisma/client/runtime/library";
 
@@ -84,44 +76,11 @@ return (
         <Card>
           <CardContent className="p-4">
             <h2 className="text-xl pb-4">Order Items</h2>
-            <Table className="bg-white dark:bg-black">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Item</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Price</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {OrderItem.map(
-                  (item: {
-                    slug: string;
-                    image: string;
-                    name: string;
-                    qty: number;
-                    price: Decimal;
-                  }) => (
-                    <TableRow key={item.slug}>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={50}
-                            height={50}
-                          />
-                          <span className="ml-2">{item.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>{item.qty}</TableCell>
-                      <TableCell>
-                        {formatCurrency(Number(item.price))}
-                      </TableCell>
-                    </TableRow>
-                  )
-                )}
-              </TableBody>
-            </Table>
+           <OrderTable order={OrderItem.map(item => ({
+             ...item,
+             productId: item.slug, 
+             price: item.price.toString()//it makes me pass it to string and idk why
+           }))} />
           </CardContent>
         </Card>
       </div>
