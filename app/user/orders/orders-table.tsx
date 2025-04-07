@@ -9,14 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-type Order = {
-  id: string;
-  createdAt: string;
-  totalPrice: number;
-  isPaid: boolean;
-  isDelivered: boolean;
-};
+import { Order } from "@/types";
 
 const MyOrdersTable = ({
   orders,
