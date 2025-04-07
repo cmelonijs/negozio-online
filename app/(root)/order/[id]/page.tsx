@@ -38,93 +38,120 @@ const OrderDetailsPage = async ({ params }: { params: { id: string } }) => {
     deliveredAt: string | null;
   };
 
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Order Details</h1>
-      <p>Order ID: {params.id}</p>
+return (
+  <div className="space-y-6">
+    <h1 className="text-2xl font-bold">Order Details</h1>
+    <p>Order ID: {params.id}</p>
 
-      <Card>
-        <CardContent className="p-4">
-          <h2 className="text-xl pb-4">Shipping Address</h2>
-          {shippingAddress ? (
-            <>
-              <p>{shippingAddress.fullName}</p>
-              <p>
-                {shippingAddress.streetAddress}, {shippingAddress.city} <br />
-                {shippingAddress.postalCode}, {shippingAddress.country}
-              </p>
-            </>
-          ) : (
-            <p>Shipping address not available</p>
-          )}
-          <p>
-            <strong>Status:</strong> {isDelivered && deliveredAt ? `Delivered at ${new Date(deliveredAt).toLocaleString()}` : "Not Delivered"}
-          </p>
-        </CardContent>
-      </Card>
+    <div className="flex flex-col lg:flex-row lg:space-x-6">
+      <div className="flex flex-col space-y-6 lg:w-2/3">
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-xl pb-4">Shipping Address</h2>
+            {shippingAddress ? (
+              <>
+                <p>{shippingAddress.fullName}</p>
+                <p>
+                  {shippingAddress.streetAddress}, {shippingAddress.city} <br />
+                  {shippingAddress.postalCode}, {shippingAddress.country}
+                </p>
+              </>
+            ) : (
+              <p>Shipping address not available</p>
+            )}
+            <p>
+              <strong>Status:</strong>{" "}
+              {isDelivered && deliveredAt
+                ? `Delivered at ${new Date(deliveredAt).toLocaleString()}`
+                : "Not Delivered"}
+            </p>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardContent className="p-4">
-          <h2 className="text-xl pb-4">Payment Method</h2>
-          <p>{paymentMethod}</p>
-          <p>
-            <strong>Status:</strong> {isPaid && paidAt ? `Paid at ${new Date(paidAt).toLocaleString()}` : "Not Paid"}
-          </p>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-xl pb-4">Payment Method</h2>
+            <p>{paymentMethod}</p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {isPaid && paidAt
+                ? `Paid at ${new Date(paidAt).toLocaleString()}`
+                : "Not Paid"}
+            </p>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardContent className="p-4">
-          <h2 className="text-xl pb-4">Order Items</h2>
-          <Table className="bg-white dark:bg-black">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Item</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Price</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {OrderItem.map((item: { slug: string; image: string; name: string; qty: number; price: Decimal }) => (
-                <TableRow key={item.slug}>
-                  <TableCell>
-                    <div className="flex items-center">
-                      <Image src={item.image} alt={item.name} width={50} height={50} />
-                      <span className="ml-2">{item.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{item.qty}</TableCell>
-                  <TableCell>{formatCurrency(Number(item.price))}</TableCell>
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-xl pb-4">Order Items</h2>
+            <Table className="bg-white dark:bg-black">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Item</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Price</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {OrderItem.map(
+                  (item: {
+                    slug: string;
+                    image: string;
+                    name: string;
+                    qty: number;
+                    price: Decimal;
+                  }) => (
+                    <TableRow key={item.slug}>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            width={50}
+                            height={50}
+                          />
+                          <span className="ml-2">{item.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{item.qty}</TableCell>
+                      <TableCell>
+                        {formatCurrency(Number(item.price))}
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
 
-      <Card>
-        <CardContent className="p-4 space-y-4">
-          <h2 className="text-xl pb-4">Order Summary</h2>
-          <div className="flex justify-between">
-            <span>Items Price:</span>
-            <span>{formatCurrency(Number(itemsPrice))}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Tax Price:</span>
-            <span>{formatCurrency(Number(taxPrice))}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Shipping Price:</span>
-            <span>{formatCurrency(Number(shippingPrice))}</span>
-          </div>
-          <div className="flex justify-between font-bold">
-            <span>Total Price:</span>
-            <span>{formatCurrency(Number(totalPrice))}</span>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="lg:w-1/3">
+        <Card>
+          <CardContent className="p-4 space-y-4 pl-7 pr-7">
+            <h2 className="text-xl pb-4">Order Summary</h2>
+            <div className="flex justify-between">
+              <span>Items Price:</span>
+              <span>{formatCurrency(Number(itemsPrice))}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Tax Price:</span>
+              <span>{formatCurrency(Number(taxPrice))}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Shipping Price:</span>
+              <span>{formatCurrency(Number(shippingPrice))}</span>
+            </div>
+            <div className="flex justify-between font-bold">
+              <span>Total Price:</span>
+              <span>{formatCurrency(Number(totalPrice))}</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
-  );
-};
+  </div>
+);
+}
 
 export default OrderDetailsPage;
