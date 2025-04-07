@@ -4,7 +4,7 @@ import MyOrdersTable from "./orders-table";
 const OrdersPage = async ({ searchParams }: { searchParams: { page?: string } }) => {
   const currentPage = Number(searchParams.page) || 1; 
 
-  const { data: rawOrders, totalPages } = await getMyOrders({ limit: 3, page: currentPage });
+  const { data: rawOrders, totalPages } = await getMyOrders({ limit: 6, page: currentPage });
 
   const orders = rawOrders.map(order => ({
     id: order.id,
