@@ -93,21 +93,21 @@ export async function getUserById(userId: string) {
 }
 export async function changeAddress(formData: FormData) {
   const session = await auth();
-  
+
   if (!session?.user?.id) {
     return {
       success: false,
       message: "You must be logged in to update your address",
     };
   }
-  
+
   try {
     const address = {
       fullName: formData.get("fullName"),
       streetAddress: formData.get("streetAddress"),
       city: formData.get("city"),
       postalCode: formData.get("postalCode"),
-      Country: formData.get("Country"), 
+      Country: formData.get("Country"),
     };
 
     await prisma.user.update({
@@ -129,14 +129,14 @@ export async function changeAddress(formData: FormData) {
 
 export async function paymentMethod(formData: FormData) {
   const session = await auth();
-  
+
   if (!session?.user?.id) {
     return {
       success: false,
       message: "You must be logged in to chose a payment method",
     };
   }
-  
+
   try {
     const paymentMethod = {
       paymentMethod: formData.get("paymentMethod"),
@@ -150,6 +150,42 @@ export async function paymentMethod(formData: FormData) {
     return {
       success: true,
       message: "Payment method updated successfully!",
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+
+// update the user profile
+export async function updateProfile(user: { name: string; email: string }) {
+  try {
+    const session = await auth();
+
+    const currentUser = await prisma.user.findFirst({
+      where: {
+        id: session?.user?.id,
+      },
+    });
+
+    if (!currentUser) {
+      throw new Error("User not found");
+    }
+
+    await prisma.user.update({
+      where: {
+        id: currentUser.id,
+      },
+      data: {
+        name: user.name,
+      },
+    });
+
+    return {
+      success: true,
+      message: "User has been updated successfully",
     };
   } catch (err) {
     return {
