@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation"; // Import useRouter
+import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import {
   Table,
@@ -22,23 +22,17 @@ const MyOrdersTable = ({
   totalPages: number;
   currentPage: number;
 }) => {
-  const router = useRouter(); 
-
-  const handleRowClick = (orderId: string) => {
-    router.push(`/order/${orderId}`); 
-  };
-
   return (
-    <div>
-      <Table className="bg-white dark:bg-black">
+    <div className="flex flex-col items-center justify-start min-h-screen py-8 px-4">
+      <Table className="bg-white dark:bg-black w-full table-auto">
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>DATE</TableHead>
-            <TableHead>TOTAL</TableHead>
-            <TableHead>PAID</TableHead>
-            <TableHead>DELIVERED</TableHead>
-            <TableHead>ACTIONS</TableHead>
+            <TableHead className="px-4 py-2">ID</TableHead>
+            <TableHead className="px-4 py-2">DATE</TableHead>
+            <TableHead className="px-4 py-2">TOTAL</TableHead>
+            <TableHead className="px-4 py-2">PAID</TableHead>
+            <TableHead className="px-4 py-2">DELIVERED</TableHead>
+            <TableHead className="px-4 py-2">ACTIONS</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -46,31 +40,39 @@ const MyOrdersTable = ({
             <TableRow
               key={order.id}
               className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
-              onClick={() => handleRowClick(order.id)} 
             >
-              <TableCell>{order.id}</TableCell>
-              <TableCell>
+              <TableCell className="px-4 py-2">
+                <Link href={`/order/${order.id}`} className="hover:underline">
+                  {order.id}
+                </Link>
+              </TableCell>
+              <TableCell className="px-4 py-2">
                 {new Date(order.createdAt).toLocaleString()}
               </TableCell>
-              <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
-              <TableCell>{order.isPaid ? "Yes" : "No"}</TableCell>
-              <TableCell>{order.isDelivered ? "Yes" : "No"}</TableCell>
-              <TableCell>
-                <button
+              <TableCell className="px-4 py-2">
+                {formatCurrency(order.totalPrice)}
+              </TableCell>
+              <TableCell className="px-4 py-2">
+                {order.isPaid ? "Yes" : "No"}
+              </TableCell>
+              <TableCell className="px-4 py-2">
+                {order.isDelivered ? "Yes" : "No"}
+              </TableCell>
+              <TableCell className="px-4 py-2">
+                <Link
+                  href={`/order/${order.id}`}
                   className="text-yellow-500 hover:underline hover:text-yellow-600"
-                  onClick={(e) => {
-                    e.stopPropagation(); 
-                    router.push(`/order/${order.id}`); 
-                  }}
                 >
                   Details
-                </button>
+                </Link>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <Pagination page={currentPage} totalPages={totalPages} urlParamName="page" />
+      <div className="mt-4">
+        <Pagination page={currentPage} totalPages={totalPages} urlParamName="page" />
+      </div>
     </div>
   );
 };
