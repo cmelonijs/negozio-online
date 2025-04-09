@@ -1,8 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
-// import { toast } from "sonner";
+
 import { useTransition } from "react";
-// import { addItemToCart, removeItemFormCart } from "@/lib/actions/cart.actions";
 import { ArrowRight, Loader, Minus, Plus } from "lucide-react";
 import { Cart } from "@/types";
 import Link from "next/link";
@@ -21,7 +19,6 @@ import { addItemToCart, removeItemFormCart } from "@/lib/actions/cart.actions";
 import { toast } from "sonner";
 
 const CartTable = ({ cart }: { cart?: Cart }) => {
-  const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
 
@@ -49,7 +46,7 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                     <TableCell>
                       <Link
                         className="flex items-center"
-                        href={`/product/${item.slug}`}
+                        href={`/products/${item.slug}`}
                       >
                         <Image
                           src={item.image}
@@ -124,20 +121,17 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                 Subtotal({cart.items.reduce((acc, curr) => acc + curr.qty, 0)}
                 ): <span className="font-bold">{cart.itemsPrice}</span>
               </div>
-              <Button
-                className="w-full"
-                disabled={isPending}
-                onClick={() =>
-                  startTransition(() => router.push("/shipping-address"))
-                }
+              <Link
+                href="/shipping-address"
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-yellow-500 font-semibold rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:bg-yellow-600"
               >
                 {isPending ? (
                   <Loader className="h-4 w-4 animate-spin" />
                 ) : (
-                  <ArrowRight className="w-4 h-4 " />
+                  <ArrowRight className="w-4 h-4" />
                 )}
                 Proceed to checkout
-              </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
