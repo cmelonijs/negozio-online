@@ -5,10 +5,9 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { signOutUser } from "@/lib/actions/user.actions";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
-
 import { UserIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -28,13 +27,13 @@ const UserButton = async () => {
   const firstInitial = session.user?.name?.charAt(0).toUpperCase() ?? "U";
 
   return (
-    <div className="flex gap-2 flex-centeer">
+    <div className="flex gap-2 items-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="flex items-center">
             <Button
               variant="ghost"
-              className="relative w-8 h-8 rounded-full ml-2 flex items-center justify-center bg-orange-500"
+              className="relative w-8 h-8 rounded-full ml-2 flex items-center justify-center bg-orange-500 text-white"
             >
               {firstInitial}
             </Button>
@@ -51,7 +50,17 @@ const UserButton = async () => {
               </div>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuItem className="border border-gray-300 rounded-sm p-3 mb-1">
+
+          <DropdownMenuItem asChild className="border border-gray-300 rounded-sm pt-7 pb-7 pl-6 mb-1">
+            <Link
+              href="/user/profile"
+              className="w-full py-4 px-2 h-4 justify-start"
+            >
+              Profile
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem asChild className="border border-gray-300 rounded-sm p-3 mb-1">
             <form action={signOutUser} className="w-full">
               <Button
                 className="w-full py-4 px-2 h-4 justify-start"
