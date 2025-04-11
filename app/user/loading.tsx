@@ -13,7 +13,6 @@ const LoadingPage = () => {
         position: "fixed", 
         top: 0,
         left: 0,
-        backgroundColor: "white",
         zIndex: 9999, 
       }}
     >
