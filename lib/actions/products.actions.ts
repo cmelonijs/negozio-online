@@ -20,3 +20,11 @@ export async function getProductBySlug(slug: string) {
 
   return convertToPlainObject(data);
 }
+
+export async function getAllProducts() {
+  const data = await prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
+  return convertToPlainObject(data);
+}
