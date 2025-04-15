@@ -9,6 +9,20 @@ const currency = z
     "Price must have exactly two decimal places (e.g., 49.99)"
   );
 
+export const productFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  slug: z.string().min(2, "Slug must be at least 2 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  price: z.coerce.number().positive("Price must be positive"),
+  stock: z.coerce.number().int().nonnegative("Stock cannot be negative"),
+  rating: z.coerce.number().min(0).max(5, "Rating must be between 0 and 5"),
+  numReviews: z.coerce.number().int().nonnegative("Number of reviews cannot be negative"),
+  category: z.string().min(1, "Category is required"),
+  brand: z.string().min(1, "Brand is required"),
+  image: z.string().url("Image must be a valid URL"),
+  isFeatured: z.boolean().default(false),
+});
+
 export const insertProductSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   slug: z.string().min(3, "Slug must be at least 3 characters"),
