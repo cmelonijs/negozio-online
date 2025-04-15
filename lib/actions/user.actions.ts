@@ -159,6 +159,23 @@ export async function paymentMethod(formData: FormData) {
   }
 }
 
+export const getAllUsers = async () => {
+  const users = await prisma.user.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+
+  return users;
+};
+
 // update the user profile
 export async function updateProfile(user: { name: string; email: string }) {
   try {
