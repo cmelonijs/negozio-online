@@ -10,7 +10,6 @@ import {
 import { signOutUser } from "@/lib/actions/user.actions";
 import { UserIcon } from "lucide-react";
 import Link from "next/link";
-import { isAdminUser } from "@/lib/actions/user.actions";
 
 const UserButton = async () => {
   const session = await auth();
@@ -26,7 +25,6 @@ const UserButton = async () => {
   }
 
   const firstInitial = session.user?.name?.charAt(0).toUpperCase() ?? "U";
-  const isAdmin = await isAdminUser();
 
   return (
     <div className="flex gap-2 items-center">
@@ -62,16 +60,14 @@ const UserButton = async () => {
             </Link>
           </DropdownMenuItem>
 
-          {isAdmin && (
-            <DropdownMenuItem asChild className="border border-gray-300 rounded-sm pt-7 pb-7 pl-6 mb-1">
-              <Link
-                href="/admin/overview"
-                className="w-full py-4 px-2 h-4 justify-start"
-              >
-                Admin
-              </Link>
-            </DropdownMenuItem>
-          )}
+          <DropdownMenuItem asChild className="border border-gray-300 rounded-sm pt-7 pb-7 pl-6 mb-1">
+            <Link
+              href="/admin/overview"
+              className="w-full py-4 px-2 h-4 justify-start"
+            >
+              Admin
+            </Link>
+          </DropdownMenuItem>
 
           <DropdownMenuItem asChild className="border border-gray-300 rounded-sm p-3 mb-1">
             <form action={signOutUser} className="w-full">
