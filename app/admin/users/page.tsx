@@ -1,4 +1,3 @@
-
 import { getAllUsers } from "@/lib/actions/user.actions";
 import UsersTable from "./users-table";
 
@@ -10,10 +9,13 @@ const UsersPage = async ({
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
 
-  const users = await getAllUsers();
+  const { data: rawUsers, totalPages } = await getAllUsers({
+    limit: 8,
+    page: currentPage,
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const formattedUsers = users.map((user: any) => ({
+  const users = rawUsers.map((user: any) => ({
     id: user.id,
     name: user.name,
     email: user.email,
@@ -24,11 +26,7 @@ const UsersPage = async ({
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">All Users</h1>
-      <UsersTable
-        users={formattedUsers}
-        totalPages={1} 
-        currentPage={currentPage}
-      />
+      <UsersTable users={users} totalPages={totalPages} currentPage={currentPage} />
     </div>
   );
 };

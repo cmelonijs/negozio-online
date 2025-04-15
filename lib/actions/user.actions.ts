@@ -159,22 +159,23 @@ export async function paymentMethod(formData: FormData) {
   }
 }
 
-export const getAllUsers = async () => {
+export const getAllUsers = async ({ limit, page }: { limit: number; page: number }) => {
+  const skip = (page - 1) * limit;
+
   const users = await prisma.user.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      createdAt: true,
-    },
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
   });
 
-  return users;
+  const totalCount = await prisma.user.count();
+
+  return {
+    data: users,
+    totalPages: Math.ceil(totalCount / limit),
+  };
 };
+
 
 // update the user profile
 export async function updateProfile(user: { name: string; email: string }) {
