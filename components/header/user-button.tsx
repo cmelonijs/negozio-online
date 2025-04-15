@@ -62,7 +62,7 @@ const UserButton = async () => {
 
           <DropdownMenuItem asChild className="border border-gray-300 rounded-sm pt-7 pb-7 pl-6 mb-1">
             <Link
-              href="admin/overview"
+              href="/admin/overview"
               className="w-full py-4 px-2 h-4 justify-start"
             >
               Admin
