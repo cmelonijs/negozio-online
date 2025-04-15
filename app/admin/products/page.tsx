@@ -1,6 +1,14 @@
 import Link from "next/link";
 import { getAllProducts } from "@/lib/actions/products.actions";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const ProductsPage = async () => {
   const products = await getAllProducts();
@@ -15,30 +23,30 @@ const ProductsPage = async () => {
       </div>
 
       <div className="overflow-x-auto rounded-lg border dark:border-gray-700">
-        <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg">
-          <thead className="bg-gray-100 dark:bg-gray-700">
-            <tr>
-              <th className="py-3 px-4 border-b dark:border-gray-600 text-left dark:text-gray-200">ID</th>
-              <th className="py-3 px-4 border-b dark:border-gray-600 text-left dark:text-gray-200">NAME</th>
-              <th className="py-3 px-4 border-b dark:border-gray-600 text-left dark:text-gray-200">PRICE</th>
-              <th className="py-3 px-4 border-b dark:border-gray-600 text-left dark:text-gray-200">CATEGORY</th>
-              <th className="py-3 px-4 border-b dark:border-gray-600 text-left dark:text-gray-200">STOCK</th>
-              <th className="py-3 px-4 border-b dark:border-gray-600 text-left dark:text-gray-200">RATING</th>
-              <th className="py-3 px-4 border-b dark:border-gray-600 text-left dark:text-gray-200">ACTIONS</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table className="min-w-full bg-white dark:bg-gray-800 rounded-lg">
+          <TableHeader className="bg-gray-100 dark:bg-gray-700">
+            <TableRow>
+              <TableHead className="py-3 px-4 dark:text-gray-200">ID</TableHead>
+              <TableHead className="py-3 px-4 dark:text-gray-200">NAME</TableHead>
+              <TableHead className="py-3 px-4 dark:text-gray-200">PRICE</TableHead>
+              <TableHead className="py-3 px-4 dark:text-gray-200">CATEGORY</TableHead>
+              <TableHead className="py-3 px-4 dark:text-gray-200">STOCK</TableHead>
+              <TableHead className="py-3 px-4 dark:text-gray-200">RATING</TableHead>
+              <TableHead className="py-3 px-4 dark:text-gray-200">ACTIONS</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {products.map((product) => (
-              <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td className="py-3 px-4 border-b dark:border-gray-600 dark:text-gray-200">
+              <TableRow key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <TableCell className="py-3 px-4 dark:text-gray-200">
                   ...{product.id.slice(-6)}
-                </td>
-                <td className="py-3 px-4 border-b dark:border-gray-600 dark:text-gray-200">{product.name}</td>
-                <td className="py-3 px-4 border-b dark:border-gray-600 dark:text-gray-200">${product.price}</td>
-                <td className="py-3 px-4 border-b dark:border-gray-600 dark:text-gray-200">{product.category}</td>
-                <td className="py-3 px-4 border-b dark:border-gray-600 dark:text-gray-200">{product.stock}</td>
-                <td className="py-3 px-4 border-b dark:border-gray-600 dark:text-gray-200">{product.rating}</td>
-                <td className="py-3 px-4 border-b dark:border-gray-600">
+                </TableCell>
+                <TableCell className="py-3 px-4 dark:text-gray-200">{product.name}</TableCell>
+                <TableCell className="py-3 px-4 dark:text-gray-200">${product.price}</TableCell>
+                <TableCell className="py-3 px-4 dark:text-gray-200">{product.category}</TableCell>
+                <TableCell className="py-3 px-4 dark:text-gray-200">{product.stock}</TableCell>
+                <TableCell className="py-3 px-4 dark:text-gray-200">{product.rating}</TableCell>
+                <TableCell className="py-3 px-4">
                   <div className="flex space-x-2">
                     <Button size="sm" variant="outline" className="text-base font-medium">
                      Edit
@@ -47,11 +55,11 @@ const ProductsPage = async () => {
                        Delete
                     </Button>
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
