@@ -60,6 +60,15 @@ const UserButton = async () => {
             </Link>
           </DropdownMenuItem>
 
+          <DropdownMenuItem asChild className="border border-gray-300 rounded-sm pt-7 pb-7 pl-6 mb-1">
+            <Link
+              href="admin/overview"
+              className="w-full py-4 px-2 h-4 justify-start"
+            >
+              Admin
+            </Link>
+          </DropdownMenuItem>
+
           <DropdownMenuItem asChild className="border border-gray-300 rounded-sm p-3 mb-1">
             <form action={signOutUser} className="w-full">
               <Button
