@@ -12,6 +12,7 @@ import Pagination from "@/components/shared/pagination";
 import { useState } from "react";
 import { deleteUserById } from "@/lib/actions/user.actions";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type User = {
   id: string;
@@ -33,7 +34,7 @@ const UsersTable = ({
 
   const handleDelete = async (id: string) => {
     await deleteUserById(id);
-    window.location.reload(); // Refresh the page to reflect changes
+    window.location.reload(); 
   };
 
   return (
@@ -62,6 +63,9 @@ const UsersTable = ({
                 >
                   Delete
                 </Button>
+                <Link href={`/admin/users/${user.id}`}>
+                  <Button>Edit</Button>
+                </Link>
               </TableCell>
             </TableRow>
           ))}
@@ -79,7 +83,9 @@ const UsersTable = ({
       {confirmDeleteId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md max-w-sm w-full text-center">
-            <h2 className="text-lg font-semibold mb-4">Are you sure you want to delete this user?</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              Are you sure you want to delete this user?
+            </h2>
             <p className="mb-6">This operation cannot be undone</p>
             <div className="flex justify-end space-x-4">
               <Button variant="ghost" onClick={() => setConfirmDeleteId(null)}>
