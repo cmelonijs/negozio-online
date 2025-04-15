@@ -176,6 +176,17 @@ export const getAllUsers = async ({ limit, page }: { limit: number; page: number
   };
 };
 
+export const deleteUserById = async (id: string) => {
+  try {
+    await prisma.user.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error("Failed to delete user");
+  }
+};
+
 
 // update the user profile
 export async function updateProfile(user: { name: string; email: string }) {
