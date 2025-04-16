@@ -20,6 +20,7 @@ export const productFormSchema = z.object({
   category: z.string().min(1, "Category is required"),
   brand: z.string().min(1, "Brand is required"),
   image: z.string().url("Image must be a valid URL"),
+  image2: z.string().url("Image must be a valid URL"),
   isFeatured: z.boolean().default(false),
 });
 

@@ -1,5 +1,5 @@
 import { Toaster } from "sonner";
-import ProductForm from "./product-form";
+import ProductForm from "../product-form";
 
 export default function NewProductPage() {
   return (

@@ -3,9 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
-import { createProduct } from "@/lib/actions/products.actions";
+import { createProduct, updateProduct } from "@/lib/actions/products.actions";
 import { productFormSchema } from "@/lib/validators";
 
 import { Button } from "@/components/ui/button";
@@ -37,9 +37,16 @@ type FieldConfig = {
   fullWidth?: boolean;
 };
 
-export default function ProductForm() {
+type ProductType = z.infer<typeof productFormSchema> & {
+  id?: string;
+  images?: string[];
+  banner?: string | null;
+};
+
+export default function ProductForm({ product }: { product?: ProductType }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const isEditMode = !!product;
 
   const form = useForm<z.infer<typeof productFormSchema>>({
     resolver: zodResolver(productFormSchema),
@@ -54,10 +61,32 @@ export default function ProductForm() {
       category: "",
       brand: "",
       image: "",
+      image2: "",
       isFeatured: false,
     },
   });
 
+  // Set form values when product data is available
+  useEffect(() => {
+    if (product) {
+      const formValues = {
+        name: product.name,
+        slug: product.slug,
+        description: product.description,
+        price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
+        stock: product.stock,
+        rating: product.rating,
+        numReviews: product.numReviews,
+        category: product.category,
+        brand: product.brand,
+        image: product.images && product.images[0] ? product.images[0] : "",
+        image2: product.images && product.images[1] ? product.images[1] : "",
+        isFeatured: product.isFeatured,
+      };
+      
+      form.reset(formValues);
+    }
+  }, [product, form]);
 
   const fields: FieldConfig[] = [
     { name: "name", label: "Product Name", placeholder: "Product name" },
@@ -106,6 +135,11 @@ export default function ProductForm() {
       placeholder: "https://example.com/image.jpg" 
     },
     { 
+      name: "image2", 
+      label: "Secondary Image URL", 
+      placeholder: "https://example.com/image2.jpg" 
+    },
+    { 
       name: "isFeatured", 
       label: "Featured Product", 
       isCheckbox: true, 
@@ -123,12 +157,29 @@ export default function ProductForm() {
     try {
       setIsSubmitting(true);
       
-      const result = await createProduct({
-        ...values,
-        price: values.price.toString(),
-        images: [values.image],
-        banner: null,
-      });
+      // Crea un array de imágenes, filtrando cualquier URL vacía
+      const imagesArray = [values.image, values.image2].filter(img => img !== "");
+      
+      let result;
+      
+      if (isEditMode && product?.id) {
+        // Update existing product
+        result = await updateProduct({
+          id: product.id,
+          ...values,
+          price: values.price.toString(),
+          images: imagesArray, // Usa el array de imágenes
+          banner: product.banner || null,
+        });
+      } else {
+        // Create new product
+        result = await createProduct({
+          ...values,
+          price: values.price.toString(),
+          images: imagesArray, // Usa el array de imágenes
+          banner: null,
+        });
+      }
       
       if (result.success) {
         toast.success(result.message); 
@@ -232,7 +283,10 @@ export default function ProductForm() {
             disabled={isSubmitting}
             className="dark:bg-yellow-600 dark:hover:bg-yellow-700"
           >
-            {isSubmitting ? "Saving..." : "Create Product"}
+            {isSubmitting 
+              ? "Saving..." 
+              : isEditMode ? "Update Product" : "Create Product"
+            }
           </Button>
         </div>
       </form>

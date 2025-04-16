@@ -30,15 +30,15 @@ const ProductsTable = ({
   const handleDelete = async (productId: string) => {
     if (confirm("¿Estás seguro que deseas eliminar este producto?")) {
       setIsDeleting(productId);
-      
+
       try {
         const response = await deleteProduct(productId);
-        
+
         if (response.success) {
-          toast.success(response.message); 
+          toast.success(response.message);
           router.refresh();
         } else {
-          toast.error(response.message); 
+          toast.error(response.message);
         }
       } catch (error) {
         console.error("Error al eliminar el producto:", error);
@@ -76,14 +76,14 @@ const ProductsTable = ({
                 <TableCell className="py-3 px-4 dark:text-gray-200">{product.rating}</TableCell>
                 <TableCell className="py-3 px-4">
                   <div className="flex space-x-2">
-                    <Link href={`/dashboard/products/${product.id}/edit`}>
+                    <Link href={`/admin/products/${product.id}/edit`}>
                       <Button size="sm" variant="outline" className="text-base font-medium">
                         Edit
                       </Button>
                     </Link>
-                    <Button 
-                      size="sm" 
-                      variant="destructive" 
+                    <Button
+                      size="sm"
+                      variant="destructive"
                       className="text-base font-medium"
                       onClick={() => handleDelete(product.id)}
                       disabled={isDeleting === product.id}
