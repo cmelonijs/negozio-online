@@ -1,34 +1,39 @@
+
 import { getUserById } from "@/lib/actions/user.actions";
-import { Profile } from "@/types";
-import ProfileForm from "./user-edit-form"; 
+import { auth } from "@/auth";
+import UpdateUserForm from "./user-edit-form"; 
 
-interface Props {
-  params: {
-    id: string;
-  };
-}
+const ProfilePage = async () => {
+  const session = await auth();
+  const userId = session?.user?.id;
 
-const UserEditPage = async ({ params }: Props) => {
-  const userId = params.id;
-  let userProfile: Profile | undefined = undefined;
+  let userProfile;
 
-  try {
-    const user = await getUserById(userId);
-    if (user?.name && user?.email) {
-      userProfile = {
-        name: user.name,
-        email: user.email,
-      };
+  if (userId) {
+    try {
+      const user = await getUserById(userId);
+      if (
+        user.name &&
+        user.email &&
+        (user.role === "user" || user.role === "admin")
+      ) {
+        userProfile = {
+          name: user.name,
+          email: user.email,
+          role: user.role as "user" | "admin",
+        };
+      }
+      
+    } catch (error) {
+      console.error("Error fetching user:", error);
     }
-  } catch (error) {
-    console.error("Error fetching user:", error);
   }
 
   return (
     <div className="p-6">
-      <ProfileForm initialProfileForm={userProfile} />
+      <UpdateUserForm initialProfileForm={userProfile} />
     </div>
   );
 };
 
-export default UserEditPage;
+export default ProfilePage;
