@@ -14,8 +14,9 @@ import {formatCurrency, formatDate, truncateString} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
 import {deleteOrder} from "@/lib/actions/order.actions";
+import {Order} from "@/types";
 
-const OrdersTable = ({ orders, totalPages, currentPage }) => {
+const OrdersTable = ({ orders, totalPages, currentPage}: {  orders: Order[]; totalPages: number; currentPage: number }) => {
 
     const tableHeadersTitle = ["ID", "DATE", "ORDER BY", "TOTAL", "PAID", "DELIVERED", "ACTIONS"];
     //TODO when the modal will be ready use isPending status to manage the delete API
@@ -45,19 +46,19 @@ const OrdersTable = ({ orders, totalPages, currentPage }) => {
                             {truncateString(order.id)}
                             </TableCell>
                             <TableCell className="px-4 py-2">
-                                {formatDate(new Date(order.createdAt))}
+                                {formatDate(order.createdAt)}
                             </TableCell>
                             <TableCell className="px-4 py-2">
                                 {order.user.name}
                             </TableCell>
                             <TableCell className="px-4 py-2">
-                                {formatCurrency(order.totalPrice.toString())}
+                                {formatCurrency(order.totalPrice)}
                             </TableCell>
                             <TableCell className="px-4 py-2">
-                                {order.isPaid ? formatDate(new Date(order.paidAt)) : "Not Paid"}
+                                {order.isPaid && order.paidAt ? formatDate(order.paidAt) : "Not Paid"}
                             </TableCell>
                             <TableCell className="px-4 py-2">
-                                {order.isDelivered ? formatDate(new Date(order.deliveredAt)) : "Not Delivered"}
+                                {order.isDelivered && order.deliveredAt ? formatDate(order.deliveredAt) : "Not Delivered"}
                             </TableCell>
                             <TableCell className="px-4 py-2 gap-2 flex items-center">
                                 <Button variant="outline">
