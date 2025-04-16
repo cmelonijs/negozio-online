@@ -49,7 +49,7 @@ export default function UpdateUserForm({
 
       setTimeout(() => {
         redirect("/admin/users");
-      }, 1000); 
+      }, 1000);
     } catch {
       toast.error("There was an error updating the user.");
     }
@@ -61,23 +61,23 @@ export default function UpdateUserForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="max-w-md mx-auto space-y-4 p-6 bg-white shadow-lg hover:scale-105 hover:shadow-xl border border-gray-700 hover:shadow-2xl transition-all duration-300 ease-in-out rounded-lg"
+          className="max-w-md mx-auto space-y-4 p-6 bg-white dark:bg-zinc-900 shadow-lg border border-gray-300 dark:border-zinc-700 rounded-lg transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-xl dark:hover:shadow-zinc-800"
         >
-          <h2 className="text-xl font-semibold text-gray-800">User</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">User</h2>
 
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Email</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Email"
                     type="email"
                     {...field}
                     disabled
-                    className="border p-2 rounded border-gray-400"
+                    className="border border-gray-400 dark:border-gray-700 dark:bg-zinc-800 dark:text-white p-2 rounded"
                   />
                 </FormControl>
                 <FormMessage />
@@ -90,12 +90,12 @@ export default function UpdateUserForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Name</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Full Name"
                     {...field}
-                    className="border p-2 rounded border-gray-400"
+                    className="border border-gray-400 dark:border-gray-700 dark:bg-zinc-800 dark:text-white p-2 rounded"
                   />
                 </FormControl>
                 <FormMessage />
@@ -108,13 +108,13 @@ export default function UpdateUserForm({
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Role</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Role</FormLabel>
                 <FormControl>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="border p-2 rounded border-gray-400">
+                    <SelectTrigger className="border border-gray-400 dark:border-gray-700 dark:bg-zinc-800 dark:text-white p-2 rounded">
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="dark:bg-zinc-800 dark:text-white">
                       <SelectItem value="user">User</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
@@ -125,16 +125,15 @@ export default function UpdateUserForm({
             )}
           />
 
-<Button
-  type="submit"
-  disabled={form.formState.isSubmitting}
-  className="w-full"
->
-  {form.formState.isSubmitting ? "Saving..." : "Update User"}
-</Button>
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            className="w-full dark:bg-yellow-400 dark:hover:bg-yellow-600"
+          >
+            {form.formState.isSubmitting ? "Saving..." : "Update User"}
+          </Button>
         </form>
       </Form>
     </>
   );
 }
-
