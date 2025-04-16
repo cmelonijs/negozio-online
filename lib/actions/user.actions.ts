@@ -159,6 +159,35 @@ export async function paymentMethod(formData: FormData) {
   }
 }
 
+export const getAllUsers = async ({ limit, page }: { limit: number; page: number }) => {
+  const skip = (page - 1) * limit;
+
+  const users = await prisma.user.findMany({
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+  });
+
+  const totalCount = await prisma.user.count();
+
+  return {
+    data: users,
+    totalPages: Math.ceil(totalCount / limit),
+  };
+};
+
+export const deleteUserById = async (id: string) => {
+  try {
+    await prisma.user.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error("Failed to delete user");
+  }
+};
+
+
 // update the user profile
 export async function updateProfile(user: { name: string; email: string }) {
   try {
@@ -180,6 +209,30 @@ export async function updateProfile(user: { name: string; email: string }) {
       },
       data: {
         name: user.name,
+      },
+    });
+
+    return {
+      success: true,
+      message: "User has been updated successfully",
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+
+export async function updateUser(user: { id: string; name: string; email: string; role: string }) {
+  try {
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        name: user.name,
+        role: user.role,
       },
     });
 
