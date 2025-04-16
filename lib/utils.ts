@@ -91,3 +91,17 @@ export function makeUrlQuery({
     }
   );
 }
+
+export const truncateString = (text: string) => {
+  return `..${text.slice(-6)}`;
+};
+
+export const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('it-IT', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+};

@@ -325,7 +325,7 @@ export async function getAllOrders({
   const dataCOunt = await prisma.order.count();
 
   return {
-    data,
+    data: convertToPlainObject(data),
     totalPages: Math.ceil(dataCOunt / limit),
   };
 }
