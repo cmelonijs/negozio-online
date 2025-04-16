@@ -28,16 +28,15 @@ interface ProfileFormProps {
   }
   
 
-export default function UpdateUserForm({
-  initialProfileForm,
-  userId
-}: ProfileFormProps) {
+export default function UpdateUserForm({ initialProfileForm, userId }: ProfileFormProps) {
+    
   const form = useForm<z.infer<typeof updateUserSchema>>({
+
     resolver: zodResolver(updateUserSchema),
     defaultValues: initialProfileForm || {
       name: "",
       email: "",
-      role: "user", // valor por defecto si no hay ninguno
+      role: "user", 
     },
   });
 

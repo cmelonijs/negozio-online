@@ -1,26 +1,41 @@
+import { Metadata } from "next";
 import { getUserById } from "@/lib/actions/user.actions";
 import UpdateUserForm from "./user-edit-form";
-import { notFound } from "next/navigation";
+import { CardContent } from "@/components/ui/card";
 
-export default async function EditUserPage({ params }: { params: { id: string } }) {
-  const user = await getUserById(params.id);
+export const metadata: Metadata = {
+  title: "Edit User",
+};
 
-  if (!user) return notFound();
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  const userProfile = {
+const EditUserPage = async ({ params }: Awaited<PageProps>) => {
+  const { id } = await params;
+
+  const user = await getUserById(id);
+  if (!user) {
+    return <div>User not found</div>;
+  }
+
+  const initialProfileForm = {
     name: user.name || "",
     email: user.email || "",
-    role: user.role === "admin" ? "admin" : "user", 
+    role: user.role === "admin" ? "admin" : "user",
   } as {
     name: string;
     email: string;
     role: "user" | "admin";
   };
   
-
   return (
-    <div className="p-6">
-      <UpdateUserForm initialProfileForm={userProfile} userId={params.id} />
+    <div>
+      <CardContent>
+        <UpdateUserForm userId={id} initialProfileForm={initialProfileForm} />
+      </CardContent>
     </div>
   );
-}
+};
+
+export default EditUserPage;

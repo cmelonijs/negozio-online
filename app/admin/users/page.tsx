@@ -10,7 +10,7 @@ const UsersPage = async ({
   const currentPage = Number(resolvedSearchParams.page) || 1;
 
   const { data: rawUsers, totalPages } = await getAllUsers({
-    limit: 8,
+    limit: 6,
     page: currentPage,
   });
 

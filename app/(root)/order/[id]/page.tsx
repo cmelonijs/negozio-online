@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  params: Promise<{ id: string }>; // Adjusted to match Next.js expectations
+  params: Promise<{ id: string }>; 
 }
 
 const OrderDetailsPage = async ({ params }: Awaited<PageProps>) => {
-  const resolvedParams = await params; // Resolve the Promise
+  const resolvedParams = await params; 
   const order = await getOrderById(resolvedParams.id);
 
   if (!order) {
