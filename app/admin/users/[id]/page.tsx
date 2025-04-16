@@ -1,39 +1,26 @@
-
 import { getUserById } from "@/lib/actions/user.actions";
-import { auth } from "@/auth";
-import UpdateUserForm from "./user-edit-form"; 
+import UpdateUserForm from "./user-edit-form";
+import { notFound } from "next/navigation";
 
-const ProfilePage = async () => {
-  const session = await auth();
-  const userId = session?.user?.id;
+export default async function EditUserPage({ params }: { params: { id: string } }) {
+  const user = await getUserById(params.id);
 
-  let userProfile;
+  if (!user) return notFound();
 
-  if (userId) {
-    try {
-      const user = await getUserById(userId);
-      if (
-        user.name &&
-        user.email &&
-        (user.role === "user" || user.role === "admin")
-      ) {
-        userProfile = {
-          name: user.name,
-          email: user.email,
-          role: user.role as "user" | "admin",
-        };
-      }
-      
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  }
+  const userProfile = {
+    name: user.name || "",
+    email: user.email || "",
+    role: user.role === "admin" ? "admin" : "user", 
+  } as {
+    name: string;
+    email: string;
+    role: "user" | "admin";
+  };
+  
 
   return (
     <div className="p-6">
-      <UpdateUserForm initialProfileForm={userProfile} />
+      <UpdateUserForm initialProfileForm={userProfile} userId={params.id} />
     </div>
   );
-};
-
-export default ProfilePage;
+}

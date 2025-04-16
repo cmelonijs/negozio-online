@@ -34,7 +34,7 @@ const UsersTable = ({
 
   const handleDelete = async (id: string) => {
     await deleteUserById(id);
-    window.location.reload(); 
+    window.location.reload();
   };
 
   return (
@@ -57,15 +57,15 @@ const UsersTable = ({
               <TableCell className="px-4 py-2">{user.email || "—"}</TableCell>
               <TableCell className="px-4 py-2">{user.role}</TableCell>
               <TableCell className="px-4 py-2 space-x-2">
+                <Link href={`/admin/users/${user.id}`}>
+                  <Button>Edit</Button>
+                </Link>
                 <Button
                   variant="destructive"
                   onClick={() => setConfirmDeleteId(user.id)}
                 >
                   Delete
                 </Button>
-                <Link href={`/admin/users/${user.id}`}>
-                  <Button>Edit</Button>
-                </Link>
               </TableCell>
             </TableRow>
           ))}

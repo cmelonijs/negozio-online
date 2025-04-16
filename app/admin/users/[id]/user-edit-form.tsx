@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,10 +23,15 @@ import { updateUser } from "@/lib/actions/user.actions";
 import { updateUserSchema } from "@/lib/validators";
 
 interface ProfileFormProps {
-  initialProfileForm?: z.infer<typeof updateUserSchema>;
-}
+    initialProfileForm?: z.infer<typeof updateUserSchema>;
+    userId: string;
+  }
+  
 
-export default function UpdateUserForm({ initialProfileForm }: ProfileFormProps) {
+export default function UpdateUserForm({
+  initialProfileForm,
+  userId
+}: ProfileFormProps) {
   const form = useForm<z.infer<typeof updateUserSchema>>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: initialProfileForm || {
@@ -39,13 +43,14 @@ export default function UpdateUserForm({ initialProfileForm }: ProfileFormProps)
 
   const onSubmit = async (data: z.infer<typeof updateUserSchema>) => {
     try {
-      await updateUser(data);
+      await updateUser({ ...data, id: userId });
       form.reset(data);
-      toast.success("Profile updated successfully!");
+      toast.success("User updated successfully!");
     } catch {
-      toast.error("There was an error updating the profile.");
+      toast.error("There was an error updating the user.");
     }
   };
+  
 
   return (
     <>
@@ -55,7 +60,7 @@ export default function UpdateUserForm({ initialProfileForm }: ProfileFormProps)
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-w-md mx-auto space-y-4 p-6 bg-white shadow-lg hover:scale-105 hover:shadow-xl border border-gray-700 hover:shadow-2xl transition-all duration-300 ease-in-out rounded-lg"
         >
-          <h2 className="text-xl font-semibold text-gray-800">Profile</h2>
+          <h2 className="text-xl font-semibold text-gray-800">User</h2>
 
           <FormField
             control={form.control}
@@ -102,10 +107,7 @@ export default function UpdateUserForm({ initialProfileForm }: ProfileFormProps)
               <FormItem>
                 <FormLabel>Role</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger className="border p-2 rounded border-gray-400">
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
@@ -125,7 +127,7 @@ export default function UpdateUserForm({ initialProfileForm }: ProfileFormProps)
             disabled={form.formState.isSubmitting}
             className="w-full"
           >
-            {form.formState.isSubmitting ? "Saving..." : "Update Profile"}
+            {form.formState.isSubmitting ? "Saving..." : "Update User"}
           </Button>
         </form>
       </Form>
