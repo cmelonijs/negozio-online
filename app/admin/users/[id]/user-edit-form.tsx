@@ -21,22 +21,23 @@ import { SelectContent, SelectItem } from "@/components/ui/select";
 
 import { updateUser } from "@/lib/actions/user.actions";
 import { updateUserSchema } from "@/lib/validators";
+import { redirect } from "next/navigation";
 
 interface ProfileFormProps {
-    initialProfileForm?: z.infer<typeof updateUserSchema>;
-    userId: string;
-  }
-  
+  initialProfileForm?: z.infer<typeof updateUserSchema>;
+  userId: string;
+}
 
-export default function UpdateUserForm({ initialProfileForm, userId }: ProfileFormProps) {
-    
+export default function UpdateUserForm({
+  initialProfileForm,
+  userId,
+}: ProfileFormProps) {
   const form = useForm<z.infer<typeof updateUserSchema>>({
-
     resolver: zodResolver(updateUserSchema),
     defaultValues: initialProfileForm || {
       name: "",
       email: "",
-      role: "user", 
+      role: "user",
     },
   });
 
@@ -45,11 +46,14 @@ export default function UpdateUserForm({ initialProfileForm, userId }: ProfileFo
       await updateUser({ ...data, id: userId });
       form.reset(data);
       toast.success("User updated successfully!");
+
+      setTimeout(() => {
+        redirect("/admin/users");
+      }, 1000); 
     } catch {
       toast.error("There was an error updating the user.");
     }
   };
-  
 
   return (
     <>
@@ -121,15 +125,16 @@ export default function UpdateUserForm({ initialProfileForm, userId }: ProfileFo
             )}
           />
 
-          <Button
-            type="submit"
-            disabled={form.formState.isSubmitting}
-            className="w-full"
-          >
-            {form.formState.isSubmitting ? "Saving..." : "Update User"}
-          </Button>
+<Button
+  type="submit"
+  disabled={form.formState.isSubmitting}
+  className="w-full"
+>
+  {form.formState.isSubmitting ? "Saving..." : "Update User"}
+</Button>
         </form>
       </Form>
     </>
   );
 }
+
