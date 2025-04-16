@@ -11,6 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Pagination from "@/components/shared/pagination";
+import { useState } from "react";
+import { deleteProduct } from "@/lib/actions/products.actions";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const ProductsTable = ({
   products,
@@ -21,6 +25,29 @@ const ProductsTable = ({
   totalPages: number;
   currentPage: number;
 }) => {
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const router = useRouter();
+  const handleDelete = async (productId: string) => {
+    if (confirm("¿Estás seguro que deseas eliminar este producto?")) {
+      setIsDeleting(productId);
+      
+      try {
+        const response = await deleteProduct(productId);
+        
+        if (response.success) {
+          toast.success(response.message); 
+          router.refresh();
+        } else {
+          toast.error(response.message); 
+        }
+      } catch (error) {
+        console.error("Error al eliminar el producto:", error);
+        alert("Ocurrió un error al eliminar el producto");
+      } finally {
+        setIsDeleting(null);
+      }
+    }
+  };
   return (
     <div className="flex flex-col items-center justify-start">
       <div className="overflow-x-auto rounded-lg border dark:border-gray-700 w-full">
@@ -54,8 +81,14 @@ const ProductsTable = ({
                         Edit
                       </Button>
                     </Link>
-                    <Button size="sm" variant="destructive" className="text-base font-medium">
-                      Delete
+                    <Button 
+                      size="sm" 
+                      variant="destructive" 
+                      className="text-base font-medium"
+                      onClick={() => handleDelete(product.id)}
+                      disabled={isDeleting === product.id}
+                    >
+                      {isDeleting === product.id ? "Eliminando..." : "Delete"}
                     </Button>
                   </div>
                 </TableCell>
