@@ -406,3 +406,73 @@ export async function updateOrderToDelivered(orderId: string) {
     return { success: false, message: formatError(err) };
   }
 }
+
+/*RIGHT NOW IT COUNTS ALL ORDERS, PAID AND NOT PAID WHICH IS I THINK HOW CARLO HAS IT*/
+export async function countAllOrders() {
+  try {
+    const ordersCount = await prisma.order.count();
+    return {
+      success: true,
+      totalOrders: ordersCount,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+
+
+export async function getRecentSales(limit = 5) {
+  try {
+    const recentSales = await prisma.order.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit,
+      select: {
+        createdAt: true,
+        totalPrice: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return recentSales.map((sale) => ({
+      name: sale.user?.name ?? "Unknown User",
+      date: sale.createdAt,
+      totalPrice: sale.totalPrice,
+    }));
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+
+
+export async function getTotalRevenue() {
+  try {
+    const revenue = await prisma.order.aggregate({
+      _sum: {
+        totalPrice: true,
+      },
+    });
+
+    return {
+      success: true,
+      totalRevenue: revenue._sum.totalPrice?.toNumber() || 0,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+

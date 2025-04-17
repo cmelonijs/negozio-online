@@ -227,3 +227,18 @@ export async function getFeaturedProducts() {
 
   return convertToPlainObject(data);
 }
+
+export async function countAllProducts() {
+  try {
+    const totalCount = await prisma.product.count();
+    return {
+      success: true,
+      total: totalCount,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
