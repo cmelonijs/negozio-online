@@ -247,3 +247,23 @@ export async function updateUser(user: { id: string; name: string; email: string
     };
   }
 }
+
+export async function countUsersWithRole(role: string) {
+  try {
+    const userCount = await prisma.user.count({
+      where: {
+        role: role,
+      },
+    });
+
+    return {
+      success: true,
+      total: userCount,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
