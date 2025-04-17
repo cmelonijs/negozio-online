@@ -455,3 +455,24 @@ export async function getRecentSales(limit = 5) {
   }
 }
 
+
+export async function getTotalRevenue() {
+  try {
+    const revenue = await prisma.order.aggregate({
+      _sum: {
+        totalPrice: true,
+      },
+    });
+
+    return {
+      success: true,
+      totalRevenue: revenue._sum.totalPrice?.toNumber() || 0,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+
