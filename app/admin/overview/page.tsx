@@ -1,6 +1,7 @@
 import ProductBox from "./products-box";
 import CustomersBox from "./customers-box";
 import SalesBox from "./sales-box";
+import RecentSales from "./recent-sales";
 
 const OverviewsPage = () => {
   return (
@@ -11,6 +12,7 @@ const OverviewsPage = () => {
         <CustomersBox />
         <SalesBox />
       </div>
+      <RecentSales/>
     </>
   );
 };
