@@ -117,19 +117,6 @@ export default function ProductForm({ product }: { product?: ProductType }) {
       placeholder: "Brand" 
     },
     { 
-      name: "rating", 
-      label: "Rating", 
-      type: "number", 
-      step: "0.1", 
-      min: "0", 
-      max: "5" 
-    },
-    { 
-      name: "numReviews", 
-      label: "Number of Reviews", 
-      type: "number" 
-    },
-    { 
       name: "image", 
       label: "Image URL", 
       placeholder: "https://example.com/image.jpg" 
