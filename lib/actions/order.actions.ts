@@ -406,3 +406,20 @@ export async function updateOrderToDelivered(orderId: string) {
     return { success: false, message: formatError(err) };
   }
 }
+
+/*RIGHT NOW IT COUNTS ALL ORDERS, PAID AND NOT PAID WHICH IS I THINK HOW CARLO HAS IT*/
+export async function countAllOrders() {
+  try {
+    const ordersCount = await prisma.order.count();
+    return {
+      success: true,
+      totalOrders: ordersCount,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+

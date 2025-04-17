@@ -1,5 +1,6 @@
 import ProductBox from "./products-box";
 import CustomersBox from "./customers-box";
+import SalesBox from "./sales-box";
 
 const OverviewsPage = () => {
   return (
@@ -8,6 +9,7 @@ const OverviewsPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-7">
         <ProductBox />
         <CustomersBox />
+        <SalesBox />
       </div>
     </>
   );
