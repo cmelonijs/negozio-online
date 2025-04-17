@@ -7,6 +7,9 @@ import { insertProductSchema, updateProductSchema } from "../validators";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { LATEST_PRODUCT_LIMIT, PAGE_SIZE } from "../costants";
+import { writeFile, mkdir } from "fs/promises";
+import path from "path";
+import { existsSync } from "fs";
 
 // get latest products
 export async function getLatestProducts() {
@@ -226,4 +229,55 @@ export async function getFeaturedProducts() {
   });
 
   return convertToPlainObject(data);
+}
+export async function getSlugBasedOnName(name: string) {
+  const slug = name
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "")
+    .substring(0, 50);
+  return slug;
+}
+
+// Upload product images
+export async function uploadProductImages(files: File[]): Promise<string[]> {
+  try {
+    const uploadedImages: string[] = [];
+    
+    const uploadDir = path.join(process.cwd(), "public", "images", "sample-products");
+    if (!existsSync(uploadDir)) {
+      await mkdir(uploadDir, { recursive: true });
+    }
+    
+    for (const file of files) {
+      if (file.size > 0) {
+        // Validate file size (4MB limit)
+        if (file.size > 4 * 1024 * 1024) {
+          throw new Error(`Image ${file.name} exceeds the 4MB size limit`);
+        }
+        
+        // Create a unique filename
+        const timestamp = Date.now();
+        const filename = `${timestamp}-${file.name.replace(/\s+/g, "-")}`;
+        
+        // Define the file path
+        const filePath = path.join(uploadDir, filename);
+        
+        // Convert file to buffer
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        
+        // Write file to the sample-products directory
+        await writeFile(filePath, buffer);
+        
+        // Add the correct relative path to the uploaded images array
+        uploadedImages.push(`/images/sample-products/${filename}`);
+      }
+    }
+    
+    return uploadedImages;
+  } catch (err) {
+    console.error("Error uploading images:", err);
+    throw new Error(formatError(err));
+  }
 }
