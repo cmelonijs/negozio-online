@@ -47,7 +47,6 @@ const ProductsTable = ({
     if (!productToDelete) return;
     
     setIsDeleting(productToDelete);
-    setIsModalOpen(false);
 
     try {
       const response = await deleteProduct(productToDelete);
@@ -55,6 +54,7 @@ const ProductsTable = ({
       if (response.success) {
         toast.success(response.message);
         router.refresh();
+        setIsModalOpen(false); // Only close the modal after successful deletion
       } else {
         toast.error(response.message);
       }
@@ -107,7 +107,7 @@ const ProductsTable = ({
                       onClick={() => openDeleteModal(product.id)}
                       disabled={isDeleting === product.id}
                     >
-                      {isDeleting === product.id ? "Eliminando..." : "Delete"}
+                      {isDeleting === product.id ? "Deleting..." : "Delete"}
                     </Button>
                   </div>
                 </TableCell>
@@ -117,7 +117,12 @@ const ProductsTable = ({
         </Table>
       </div>
       
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Dialog open={isModalOpen} onOpenChange={(open) => {
+        // Prevent closing modal during deletion
+        if (!isDeleting) {
+          setIsModalOpen(open);
+        }
+      }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Confirm delete</DialogTitle>
@@ -131,13 +136,15 @@ const ProductsTable = ({
               variant="destructive"
               onClick={handleConfirmDelete}
               className="mr-2"
+              disabled={isDeleting !== null}
             >
-              Delete
+              {isDeleting ? "Deleting..." : "Delete"}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => setIsModalOpen(false)}
+              disabled={isDeleting !== null}
             >
               Cancel
             </Button>

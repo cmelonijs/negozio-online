@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { createProduct, getSlugBasedOnName, updateProduct } from "@/lib/actions/products.actions";
 import { productFormSchema } from "@/lib/validators";
@@ -50,43 +50,37 @@ export default function ProductForm({ product }: { product?: ProductType }) {
   const router = useRouter();
   const isEditMode = !!product;
 
+  // Process product data for form initialization
+  const initialProductForm = product ? {
+    name: product.name,
+    slug: product.slug,
+    description: product.description,
+    price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
+    stock: product.stock,
+    rating: product.rating,
+    numReviews: product.numReviews,
+    category: product.category,
+    brand: product.brand,
+    images: product.images || [],
+    isFeatured: product.isFeatured,
+  } : {
+    name: "",
+    slug: "",
+    description: "",
+    price: 0,
+    stock: 0,
+    rating: 0,
+    numReviews: 0,
+    category: "",
+    brand: "",
+    images: [],
+    isFeatured: false,
+  };
+
   const form = useForm<z.infer<typeof productFormSchema>>({
     resolver: zodResolver(productFormSchema),
-    defaultValues: {
-      name: "",
-      slug: "",
-      description: "",
-      price: 0,
-      stock: 0,
-      rating: 0,
-      numReviews: 0,
-      category: "",
-      brand: "",
-      images: [], // Changed from image and image2 to images array
-      isFeatured: false,
-    },
+    defaultValues: initialProductForm,
   });
-
-  // Set form values when product data is available
-  useEffect(() => {
-    if (product) {
-      const formValues = {
-        name: product.name,
-        slug: product.slug,
-        description: product.description,
-        price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
-        stock: product.stock,
-        rating: product.rating,
-        numReviews: product.numReviews,
-        category: product.category,
-        brand: product.brand,
-        images: product.images || [], // Use the entire images array
-        isFeatured: product.isFeatured,
-      };
-      
-      form.reset(formValues);
-    }
-  }, [product, form]);
 
   const fields: FieldConfig[] = [
     { name: "name", label: "Product Name", placeholder: "Product name" },
