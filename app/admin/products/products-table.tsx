@@ -10,6 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Pagination from "@/components/shared/pagination";
 import { useState } from "react";
 import { deleteProduct } from "@/lib/actions/products.actions";
@@ -26,28 +34,39 @@ const ProductsTable = ({
   currentPage: number;
 }) => {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const router = useRouter();
-  const handleDelete = async (productId: string) => {
-    if (confirm("¿Estás seguro que deseas eliminar este producto?")) {
-      setIsDeleting(productId);
 
-      try {
-        const response = await deleteProduct(productId);
+  const openDeleteModal = (productId: string) => {
+    setProductToDelete(productId);
+    setIsModalOpen(true);
+  };
 
-        if (response.success) {
-          toast.success(response.message);
-          router.refresh();
-        } else {
-          toast.error(response.message);
-        }
-      } catch (error) {
-        console.error("Error al eliminar el producto:", error);
-        alert("Ocurrió un error al eliminar el producto");
-      } finally {
-        setIsDeleting(null);
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+    
+    setIsDeleting(productToDelete);
+    setIsModalOpen(false);
+
+    try {
+      const response = await deleteProduct(productToDelete);
+
+      if (response.success) {
+        toast.success(response.message);
+        router.refresh();
+      } else {
+        toast.error(response.message);
       }
+    } catch (error) {
+      console.error("Error al eliminar el producto:", error);
+      toast.error("Ocurrió un error al eliminar el producto");
+    } finally {
+      setIsDeleting(null);
+      setProductToDelete(null);
     }
   };
+
   return (
     <div className="flex flex-col items-center justify-start">
       <div className="overflow-x-auto rounded-lg border dark:border-gray-700 w-full">
@@ -85,7 +104,7 @@ const ProductsTable = ({
                       size="sm"
                       variant="destructive"
                       className="text-base font-medium"
-                      onClick={() => handleDelete(product.id)}
+                      onClick={() => openDeleteModal(product.id)}
                       disabled={isDeleting === product.id}
                     >
                       {isDeleting === product.id ? "Eliminando..." : "Delete"}
@@ -97,6 +116,35 @@ const ProductsTable = ({
           </TableBody>
         </Table>
       </div>
+      
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirm delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this product? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-start">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleConfirmDelete}
+              className="mr-2"
+            >
+              Delete
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <div className="mt-4">
         <Pagination page={currentPage} totalPages={totalPages} urlParamName="page" />
       </div>
