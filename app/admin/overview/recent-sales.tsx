@@ -1,16 +1,17 @@
-import { getRecentSales } from "@/lib/actions/order.actions";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+"use client"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-const RecentSales = async () => {
-  const sales = await getRecentSales();
+type Sale = {
+  name: string;
+  date: string; 
+  totalPrice: number;
+};
 
+type Props = {
+  sales: Sale[];
+};
+
+const RecentSales = ({ sales }: Props) => {
   return (
     <div className="mt-8">
       <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
