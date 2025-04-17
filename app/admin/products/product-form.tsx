@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { MultipleImageUpload } from "@/components/MultipleImageUpload";
 
 // Field configuration type
 type FieldConfig = {
@@ -35,6 +36,7 @@ type FieldConfig = {
   isCheckbox?: boolean;
   checkboxLabel?: string;
   fullWidth?: boolean;
+  isImageUpload?: boolean;
 };
 
 type ProductType = z.infer<typeof productFormSchema> & {
@@ -60,8 +62,7 @@ export default function ProductForm({ product }: { product?: ProductType }) {
       numReviews: 0,
       category: "",
       brand: "",
-      image: "",
-      image2: "",
+      images: [], // Changed from image and image2 to images array
       isFeatured: false,
     },
   });
@@ -79,8 +80,7 @@ export default function ProductForm({ product }: { product?: ProductType }) {
         numReviews: product.numReviews,
         category: product.category,
         brand: product.brand,
-        image: product.images && product.images[0] ? product.images[0] : "",
-        image2: product.images && product.images[1] ? product.images[1] : "",
+        images: product.images || [], // Use the entire images array
         isFeatured: product.isFeatured,
       };
       
@@ -117,14 +117,10 @@ export default function ProductForm({ product }: { product?: ProductType }) {
       placeholder: "Brand" 
     },
     { 
-      name: "image", 
-      label: "Image URL", 
-      placeholder: "https://example.com/image.jpg" 
-    },
-    { 
-      name: "image2", 
-      label: "Secondary Image URL", 
-      placeholder: "https://example.com/image2.jpg" 
+      name: "images", 
+      label: "Product Images", 
+      description: "Upload product images (max 5, each less than 4MB)",
+      isImageUpload: true
     },
     { 
       name: "isFeatured", 
@@ -144,9 +140,6 @@ export default function ProductForm({ product }: { product?: ProductType }) {
     try {
       setIsSubmitting(true);
       
-      // Crea un array de imágenes, filtrando cualquier URL vacía
-      const imagesArray = [values.image, values.image2].filter(img => img !== "");
-      
       let result;
       
       if (isEditMode && product?.id) {
@@ -155,7 +148,6 @@ export default function ProductForm({ product }: { product?: ProductType }) {
           id: product.id,
           ...values,
           price: values.price.toString(),
-          images: imagesArray, // Usa el array de imágenes
           banner: product.banner || null,
         });
       } else {
@@ -163,7 +155,6 @@ export default function ProductForm({ product }: { product?: ProductType }) {
         result = await createProduct({
           ...values,
           price: values.price.toString(),
-          images: imagesArray, // Usa el array de imágenes
           banner: null,
         });
       }
@@ -183,7 +174,7 @@ export default function ProductForm({ product }: { product?: ProductType }) {
   }
 
   const renderField = (fieldConfig: FieldConfig) => {
-    const { name, label, placeholder, description, type, min, max, step, isCheckbox, fullWidth } = fieldConfig;
+    const { name, label, placeholder, description, type, min, max, step, isCheckbox, isImageUpload, fullWidth } = fieldConfig;
     
     // Special case for the slug field to include the generate button
     if (name === "slug") {
@@ -223,6 +214,27 @@ export default function ProductForm({ product }: { product?: ProductType }) {
               {description && <FormDescription className="dark:text-gray-400">{description}</FormDescription>}
               <FormMessage className="dark:text-red-400" />
             </FormItem>
+          )}
+        />
+      );
+    }
+    
+    // Special case for image uploads
+    if (isImageUpload) {
+      return (
+        <FormField
+          key={name}
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <MultipleImageUpload
+              label={label}
+              description={description}
+              values={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              maxImages={5}
+            />
           )}
         />
       );
@@ -292,9 +304,14 @@ export default function ProductForm({ product }: { product?: ProductType }) {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {fields
-            .filter(field => !field.fullWidth)
+            .filter(field => !field.fullWidth && !field.isImageUpload)
             .map(renderField)}
         </div>
+        
+        {/* Image upload section */}
+        {fields
+          .filter(field => field.isImageUpload)
+          .map(renderField)}
 
         {fields
           .filter(field => field.fullWidth)
