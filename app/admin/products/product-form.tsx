@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MultipleImageUpload } from "@/components/MultipleImageUpload";
+import { MultipleImageUpload } from "@/components/admin/MultipleImageUpload";
 
 // Field configuration type
 type FieldConfig = {
