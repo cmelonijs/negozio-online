@@ -227,3 +227,11 @@ export async function getFeaturedProducts() {
 
   return convertToPlainObject(data);
 }
+export async function getSlugBasedOnName(name: string) {
+  const slug = name
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "")
+    .substring(0, 50);
+  return slug;
+}

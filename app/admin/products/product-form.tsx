@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { z } from "zod";
-import { createProduct, updateProduct } from "@/lib/actions/products.actions";
+import { createProduct, getSlugBasedOnName, updateProduct } from "@/lib/actions/products.actions";
 import { productFormSchema } from "@/lib/validators";
 
 import { Button } from "@/components/ui/button";
@@ -198,6 +198,50 @@ export default function ProductForm({ product }: { product?: ProductType }) {
   const renderField = (fieldConfig: FieldConfig) => {
     const { name, label, placeholder, description, type, min, max, step, isCheckbox, fullWidth } = fieldConfig;
     
+    // Special case for the slug field to include the generate button
+    if (name === "slug") {
+      return (
+        <FormField
+          key={name}
+          control={form.control}
+          name={name}
+          render={({ field }) => (
+            <FormItem className="dark:text-gray-200">
+              <FormLabel className="dark:text-gray-200">{label}</FormLabel>
+              <div className="flex space-x-2">
+                <FormControl>
+                  <Input 
+                    placeholder={placeholder} 
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:placeholder:text-gray-500"
+                    {...field} 
+                  />
+                </FormControl>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={async () => {
+                    const productName = form.getValues("name");
+                    if (productName) {
+                      const generatedSlug = await getSlugBasedOnName(productName);
+                      form.setValue("slug", generatedSlug);
+                    } else {
+                      toast.error("Please enter a product name first");
+                    }
+                  }}
+                  className="dark:hover:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
+                >
+                  Generate
+                </Button>
+              </div>
+              {description && <FormDescription className="dark:text-gray-400">{description}</FormDescription>}
+              <FormMessage className="dark:text-red-400" />
+            </FormItem>
+          )}
+        />
+      );
+    }
+    
+    // Default rendering for other fields
     return (
       <FormField
         key={name}
