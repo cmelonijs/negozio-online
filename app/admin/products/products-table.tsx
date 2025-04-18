@@ -10,19 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import Pagination from "@/components/shared/pagination";
 import { useState } from "react";
 import { deleteProduct } from "@/lib/actions/products.actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { DeleteModal } from "@/components/shared/deleteModalComponent";
 
 const ProductsTable = ({
   products,
@@ -43,18 +36,23 @@ const ProductsTable = ({
     setIsModalOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
-    if (!productToDelete) return;
-    
-    setIsDeleting(productToDelete);
+  const closeDeleteModal = () => {
+    if (!isDeleting) {
+      setIsModalOpen(false);
+      setProductToDelete(null);
+    }
+  };
+
+  const handleDelete = async (productId: string) => {
+    setIsDeleting(productId);
 
     try {
-      const response = await deleteProduct(productToDelete);
+      const response = await deleteProduct(productId);
 
       if (response.success) {
         toast.success(response.message);
         router.refresh();
-        setIsModalOpen(false); // Only close the modal after successful deletion
+        setIsModalOpen(false);
       } else {
         toast.error(response.message);
       }
@@ -63,7 +61,6 @@ const ProductsTable = ({
       toast.error("Ocurrió un error al eliminar el producto");
     } finally {
       setIsDeleting(null);
-      setProductToDelete(null);
     }
   };
 
@@ -117,40 +114,18 @@ const ProductsTable = ({
         </Table>
       </div>
       
-      <Dialog open={isModalOpen} onOpenChange={(open) => {
-        // Prevent closing modal during deletion
-        if (!isDeleting) {
-          setIsModalOpen(open);
-        }
-      }}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Confirm delete</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this product? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="sm:justify-start">
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleConfirmDelete}
-              className="mr-2"
-              disabled={isDeleting !== null}
-            >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsModalOpen(false)}
-              disabled={isDeleting !== null}
-            >
-              Cancel
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Using the shared DeleteModal component */}
+      {productToDelete && (
+        <DeleteModal
+          isOpen={isModalOpen}
+          onClose={closeDeleteModal}
+          onDelete={handleDelete}
+          itemId={productToDelete}
+          title="Confirm delete"
+          description="Are you sure you want to delete this product? This action cannot be undone."
+          loading={isDeleting !== null}
+        />
+      )}
       
       <div className="mt-4">
         <Pagination page={currentPage} totalPages={totalPages} urlParamName="page" />

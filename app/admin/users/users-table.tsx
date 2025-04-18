@@ -13,6 +13,7 @@ import { useState } from "react";
 import { deleteUserById } from "@/lib/actions/user.actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { DeleteModal } from "@/components/shared/deleteModalComponent";
 
 type User = {
   id: string;
@@ -30,11 +31,32 @@ const UsersTable = ({
   totalPages: number;
   currentPage: number;
 }) => {
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const openDeleteModal = (id: string) => {
+    setUserToDelete(id);
+    setIsModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    if (!isDeleting) {
+      setIsModalOpen(false);
+      setTimeout(() => setUserToDelete(null), 300); // Clear ID after close animation
+    }
+  };
 
   const handleDelete = async (id: string) => {
-    await deleteUserById(id);
-    window.location.reload();
+    setIsDeleting(true);
+    try {
+      await deleteUserById(id);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -62,7 +84,7 @@ const UsersTable = ({
                 </Link>
                 <Button
                   variant="destructive"
-                  onClick={() => setConfirmDeleteId(user.id)}
+                  onClick={() => openDeleteModal(user.id)}
                 >
                   Delete
                 </Button>
@@ -80,26 +102,16 @@ const UsersTable = ({
         />
       </div>
 
-      {confirmDeleteId && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md max-w-sm w-full text-center">
-            <h2 className="text-lg font-semibold mb-4">
-              Are you sure you want to delete this user?
-            </h2>
-            <p className="mb-6">This operation cannot be undone</p>
-            <div className="flex justify-end space-x-4">
-              <Button variant="ghost" onClick={() => setConfirmDeleteId(null)}>
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => handleDelete(confirmDeleteId)}
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
+      {userToDelete && (
+        <DeleteModal
+          isOpen={isModalOpen}
+          onClose={closeDeleteModal}
+          onDelete={handleDelete}
+          itemId={userToDelete}
+          title="Delete User"
+          description="Are you sure you want to delete this user? This operation cannot be undone."
+          loading={isDeleting}
+        />
       )}
     </div>
   );

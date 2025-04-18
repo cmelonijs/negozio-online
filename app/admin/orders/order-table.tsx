@@ -9,18 +9,45 @@ import {
 } from "@/components/ui/table";
 import Pagination from "@/components/shared/pagination";
 import Link from "next/link";
-import {Fragment, useTransition} from "react";
+import {Fragment, useState, useTransition} from "react";
 import {formatCurrency, formatDate, truncateString} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
 import {deleteOrder} from "@/lib/actions/order.actions";
 import {Order} from "@/types";
+import {DeleteModal} from "@/components/shared/deleteModalComponent";
 
 const OrdersTable = ({ orders, totalPages, currentPage}: {  orders: Order[]; totalPages: number; currentPage: number }) => {
 
     const tableHeadersTitle = ["ID", "DATE", "ORDER BY", "TOTAL", "PAID", "DELIVERED", "ACTIONS"];
-    //TODO when the modal will be ready use isPending status to manage the delete API
     const [isPending, startTransition] = useTransition();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [orderToDelete, setOrderToDelete] = useState<string | null>(null);
+
+    const openDeleteModal = (orderId: string) => {
+        setOrderToDelete(orderId);
+        setIsModalOpen(true);
+    };
+
+    const closeDeleteModal = () => {
+        if (!isPending) {
+            setIsModalOpen(false);
+            setTimeout(() => setOrderToDelete(null), 300); // Clear ID after close animation
+        }
+    };
+
+    const handleDeleteOrder = (orderId: string) => {
+        startTransition(async () => {
+            const res = await deleteOrder(orderId);
+
+            if (!res.success) {
+                toast.error(res.message);
+                return;
+            }
+            toast.success('Order successfully deleted');
+            closeDeleteModal();
+        });
+    };
 
     return (
         <Fragment>
@@ -69,25 +96,14 @@ const OrdersTable = ({ orders, totalPages, currentPage}: {  orders: Order[]; tot
                                         Details
                                     </Link>
                                 </Button>
-                                <Button disabled={isPending}  variant="destructive" onClick={
-
-                                    () => {
-                                        startTransition(async () => {
-                                            const res = await deleteOrder(order.id);
-
-                                            if (!res.success) {
-                                                toast.error(res.message);
-                                                return;
-                                            }
-                                            toast.success('Order successfully deleted')
-                                        })
-                                    }
-
-                                }>
+                                <Button 
+                                    disabled={isPending}  
+                                    variant="destructive" 
+                                    onClick={() => openDeleteModal(order.id)}
+                                >
                                     Delete
                                 </Button>
                             </TableCell>
-
                         </TableRow>
                     ))}
                 </TableBody>
@@ -96,8 +112,20 @@ const OrdersTable = ({ orders, totalPages, currentPage}: {  orders: Order[]; tot
             <div className="mt-4">
                 <Pagination page={currentPage} totalPages={totalPages} urlParamName="page" />
             </div>
+
+            {orderToDelete && (
+                <DeleteModal
+                    isOpen={isModalOpen}
+                    onClose={closeDeleteModal}
+                    onDelete={handleDeleteOrder}
+                    itemId={orderToDelete}
+                    title="Delete Order"
+                    description="Are you sure you want to delete this order? This action cannot be undone."
+                    loading={isPending}
+                />
+            )}
         </Fragment>
     );
 }
 
-export default OrdersTable
+export default OrdersTable;
