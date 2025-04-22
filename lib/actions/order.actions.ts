@@ -407,23 +407,6 @@ export async function updateOrderToDelivered(orderId: string) {
   }
 }
 
-/*RIGHT NOW IT COUNTS ALL ORDERS, PAID AND NOT PAID WHICH IS I THINK HOW CARLO HAS IT*/
-export async function countAllOrders() {
-  try {
-    const ordersCount = await prisma.order.count();
-    return {
-      success: true,
-      totalOrders: ordersCount,
-    };
-  } catch (err) {
-    return {
-      success: false,
-      message: formatError(err),
-    };
-  }
-}
-
-
 export async function getRecentSales(limit = 5) {
   try {
     const recentSales = await prisma.order.findMany({
@@ -454,25 +437,3 @@ export async function getRecentSales(limit = 5) {
     };
   }
 }
-
-
-export async function getTotalRevenue() {
-  try {
-    const revenue = await prisma.order.aggregate({
-      _sum: {
-        totalPrice: true,
-      },
-    });
-
-    return {
-      success: true,
-      totalRevenue: revenue._sum.totalPrice?.toNumber() || 0,
-    };
-  } catch (err) {
-    return {
-      success: false,
-      message: formatError(err),
-    };
-  }
-}
-

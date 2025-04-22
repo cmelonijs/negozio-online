@@ -1,13 +1,7 @@
-import { countAllProducts } from "@/lib/actions/products.actions";
-import { countUsersWithRole } from "@/lib/actions/user.actions";
-import { countAllOrders } from "@/lib/actions/order.actions";
+import { adminDashboardStats } from "@/lib/actions/user.actions";
 import { getRecentSales } from "@/lib/actions/order.actions";
-import { getTotalRevenue } from "@/lib/actions/order.actions";
-import ProductBox from "./products-box";
-import CustomersBox from "./customers-box";
-import SalesBox from "./sales-box";
+import StatBox from "./stat-box";
 import RecentSales from "./recent-sales";
-import RevenueBox from "./revenue-box";
 
 type Sale = {
   name: string;
@@ -16,11 +10,12 @@ type Sale = {
 };
 
 const OverviewsPage = async () => {
-  const { total: totalProducts } = await countAllProducts();
-  const { total: totalUsers } = await countUsersWithRole("user");
-  const { totalOrders } = await countAllOrders();
+  const { total: totalProducts } = await adminDashboardStats("products");
+  const { total: totalUsers } = await adminDashboardStats("users", "user");
+  const { total: totalOrders } = await adminDashboardStats("orders");
+  const { total: totalRevenue } = await adminDashboardStats("revenue");
+
   const salesResponse = await getRecentSales();
-  const { totalRevenue } = await getTotalRevenue();
 
   let formattedSales: Sale[] = [];
 
@@ -36,16 +31,10 @@ const OverviewsPage = async () => {
     <>
       <h1 className="text-2xl font-semibold mb-4">This is the overview page</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-7">
-        <RevenueBox totalRevenue={totalRevenue ?? 0} />
-        <SalesBox
-          totalOrders={typeof totalOrders === "number" ? totalOrders : null}
-        />
-        <CustomersBox
-          total={typeof totalUsers === "number" ? totalUsers : null}
-        />
-        <ProductBox
-          total={typeof totalProducts === "number" ? totalProducts : null}
-        />
+        <StatBox title="Revenue" value={totalRevenue ?? 0} iconType="revenue" isCurrency />
+        <StatBox title="Sales" value={totalOrders ?? 0} iconType="sales" />
+        <StatBox title="Customers" value={totalUsers ?? 0} iconType="users" />
+        <StatBox title="Products" value={totalProducts ?? 0} iconType="products" />
       </div>
       <RecentSales sales={formattedSales} />
     </>

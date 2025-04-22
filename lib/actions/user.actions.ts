@@ -248,18 +248,38 @@ export async function updateUser(user: { id: string; name: string; email: string
   }
 }
 
-export async function countUsersWithRole(role: string) {
-  try {
-    const userCount = await prisma.user.count({
-      where: {
-        role: role,
-      },
-    });
 
-    return {
-      success: true,
-      total: userCount,
-    };
+export async function adminDashboardStats(type: "products" | "users" | "orders" | "revenue", role?: string) {
+  try {
+    switch (type) {
+      case "products":
+        return {
+          success: true,
+          total: await prisma.product.count(),
+        };
+      case "users":
+        return {
+          success: true,
+          total: await prisma.user.count({
+            where: { role },
+          }),
+        };
+      case "orders":
+        return {
+          success: true,
+          total: await prisma.order.count(),
+        };
+      case "revenue":
+        const revenue = await prisma.order.aggregate({
+          _sum: { totalPrice: true },
+        });
+        return {
+          success: true,
+          total: revenue._sum.totalPrice?.toNumber() || 0,
+        };
+      default:
+        throw new Error("Invalid type");
+    }
   } catch (err) {
     return {
       success: false,
