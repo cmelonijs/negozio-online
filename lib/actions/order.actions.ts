@@ -406,3 +406,34 @@ export async function updateOrderToDelivered(orderId: string) {
     return { success: false, message: formatError(err) };
   }
 }
+
+export async function getRecentSales(limit = 5) {
+  try {
+    const recentSales = await prisma.order.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit,
+      select: {
+        createdAt: true,
+        totalPrice: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return recentSales.map((sale) => ({
+      name: sale.user?.name ?? "Unknown User",
+      date: sale.createdAt,
+      totalPrice: sale.totalPrice,
+    }));
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
