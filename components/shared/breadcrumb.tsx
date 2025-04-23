@@ -16,12 +16,14 @@ interface BreadcrumbsProps {
   homeLabel?: string
   showHome?: boolean
   transformLabel?: (segment: string) => string
+  nonClickableSegments?: string[]
 }
 
 export function DynamicBreadcrumbs({
   homeLabel = "Home",
   showHome = true, 
-  transformLabel = (segment: string) => segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ')
+  transformLabel = (segment: string) => segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+  nonClickableSegments = []
 }: BreadcrumbsProps) {
   const pathname = usePathname()
   
@@ -56,10 +58,13 @@ export function DynamicBreadcrumbs({
             // Apply transform function to make labels more readable
             const label = transformLabel(segment)
             
+            // Check if this segment should be non-clickable
+            const isNonClickable = nonClickableSegments.includes(segment)
+            
             return (
               <React.Fragment key={segment}>
                 <BreadcrumbItem>
-                  {isLastItem ? (
+                  {isLastItem || isNonClickable ? (
                     <BreadcrumbPage>{label}</BreadcrumbPage>
                   ) : (
                     <BreadcrumbLink asChild>

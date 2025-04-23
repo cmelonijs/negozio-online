@@ -16,7 +16,7 @@ export default function RootLayout({
     return (
         <div className="flex h-screen flex-col">
             <UserHeader />
-            <DynamicBreadcrumbs/>
+            <DynamicBreadcrumbs nonClickableSegments={["admin"]}/>
             <main className="flex-1 wrapper">{children}</main>
         </div>
     );
