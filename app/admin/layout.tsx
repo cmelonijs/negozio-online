@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import UserHeader from "./header";
+import { DynamicBreadcrumbs } from "@/components/shared/breadcrumb";
 
 export const metadata: Metadata = {
     title: "Admin area",
@@ -15,6 +16,7 @@ export default function RootLayout({
     return (
         <div className="flex h-screen flex-col">
             <UserHeader />
+            <DynamicBreadcrumbs/>
             <main className="flex-1 wrapper">{children}</main>
         </div>
     );

@@ -33,44 +33,46 @@ export function DynamicBreadcrumbs({
   }
   
   return (
-    <Breadcrumb className="mb-4">
-      <BreadcrumbList>
-        {/* Home item */}
-        {showHome && (
-          <>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">{homeLabel}</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            {segments.length > 0 && <BreadcrumbSeparator />}
-          </>
-        )}
-        
-        {/* Dynamic segments */}
-        {segments.map((segment, index) => {
-          const isLastItem = index === segments.length - 1
-          const href = `/${segments.slice(0, index + 1).join('/')}`
-          
-          // Apply transform function to make labels more readable
-          const label = transformLabel(segment)
-          
-          return (
-            <React.Fragment key={segment}>
+    <div className="wrapper py-2">
+      <Breadcrumb>
+        <BreadcrumbList>
+          {/* Home item */}
+          {showHome && (
+            <>
               <BreadcrumbItem>
-                {isLastItem ? (
-                  <BreadcrumbPage>{label}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink asChild>
-                    <Link href={href}>{label}</Link>
-                  </BreadcrumbLink>
-                )}
+                <BreadcrumbLink asChild>
+                  <Link href="/">{homeLabel}</Link>
+                </BreadcrumbLink>
               </BreadcrumbItem>
-              {!isLastItem && <BreadcrumbSeparator />}
-            </React.Fragment>
-          )
-        })}
-      </BreadcrumbList>
-    </Breadcrumb>
+              {segments.length > 0 && <BreadcrumbSeparator />}
+            </>
+          )}
+          
+          {/* Dynamic segments */}
+          {segments.map((segment, index) => {
+            const isLastItem = index === segments.length - 1
+            const href = `/${segments.slice(0, index + 1).join('/')}`
+            
+            // Apply transform function to make labels more readable
+            const label = transformLabel(segment)
+            
+            return (
+              <React.Fragment key={segment}>
+                <BreadcrumbItem>
+                  {isLastItem ? (
+                    <BreadcrumbPage>{label}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink asChild>
+                      <Link href={href}>{label}</Link>
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+                {!isLastItem && <BreadcrumbSeparator />}
+              </React.Fragment>
+            )
+          })}
+        </BreadcrumbList>
+      </Breadcrumb>
+    </div>
   )
 }
