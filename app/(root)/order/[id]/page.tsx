@@ -4,6 +4,7 @@ import { getOrderById } from "@/lib/actions/order.actions";
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Decimal } from "@prisma/client/runtime/library";
+import { DynamicBreadcrumbs } from "@/components/shared/breadcrumb";
 
 export const metadata: Metadata = {
   title: "Order Details",
@@ -62,6 +63,7 @@ const OrderDetailsPage = async ({ params }: Awaited<PageProps>) => {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Order Details</h1>
+      <DynamicBreadcrumbs nonClickableSegments={["order"]}/>
       <p>Order ID: {resolvedParams.id}</p>
 
       <div className="flex flex-col lg:flex-row lg:space-x-6">
