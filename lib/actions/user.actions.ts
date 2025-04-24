@@ -287,3 +287,18 @@ export async function adminDashboardStats(type: "products" | "users" | "orders" 
     };
   }
 }
+
+export async function getUserRole(userId: string) {
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true }
+    });
+
+    return user?.role || 'user';
+  } catch (error) {
+    console.error("Failed to fetch user role:", error);
+    return 'user';
+  }
+}
