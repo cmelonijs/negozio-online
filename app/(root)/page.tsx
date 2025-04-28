@@ -1,6 +1,7 @@
 import ProductList from "@/components/shared/product/product-list";
 import { getLatestProducts } from "@/lib/actions/products.actions";
 import CarouselClient from "@/components/shared/carousel";
+import InfoComponent from "@/components/shared/infoComponent";
 
 const HomePage = async () => {
   const latestProducts = await getLatestProducts();
@@ -17,6 +18,9 @@ const HomePage = async () => {
       </div>
       <div className="space-y-8">
         <ProductList title="Newest Arrivals" data={latestProducts} />
+      </div>
+      <div className="space-y-8">
+        <InfoComponent/>
       </div>
     </>
   );
