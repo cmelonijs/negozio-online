@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { signOutUser } from "@/lib/actions/user.actions";
+import { signOutUser, getUserRole } from "@/lib/actions/user.actions";
 import { UserIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -25,6 +25,10 @@ const UserButton = async () => {
   }
 
   const firstInitial = session.user?.name?.charAt(0).toUpperCase() ?? "U";
+  
+  // Get the user's role
+  const userRole = session.user?.id ? await getUserRole(session.user.id) : 'user';
+  const isAdmin = userRole === 'admin';
 
   return (
     <div className="flex gap-2 items-center">
@@ -60,14 +64,16 @@ const UserButton = async () => {
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem asChild className="border border-gray-300 rounded-sm pt-7 pb-7 pl-6 mb-1">
-            <Link
-              href="/admin/overview"
-              className="w-full py-4 px-2 h-4 justify-start"
-            >
-              Admin
-            </Link>
-          </DropdownMenuItem>
+          {isAdmin && (
+            <DropdownMenuItem asChild className="border border-gray-300 rounded-sm pt-7 pb-7 pl-6 mb-1">
+              <Link
+                href="/admin/overview"
+                className="w-full py-4 px-2 h-4 justify-start"
+              >
+                Admin
+              </Link>
+            </DropdownMenuItem>
+          )}
 
           <DropdownMenuItem asChild className="border border-gray-300 rounded-sm p-3 mb-1">
             <form action={signOutUser} className="w-full">
