@@ -134,3 +134,16 @@ export const updateUserSchema = z.object({
     { message: "Role must be either admin or user" }
   )  
 });
+// Review schema definition
+export const reviewSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  content: z.string().min(5, "Review content must be at least 5 characters"),
+  rating: z.number().min(1).max(5),
+  productId: z.string().uuid("Invalid product ID"),
+  userId: z.string(),
+  userName: z.string(),
+});
+
+export const updateReviewSchema = reviewSchema.extend({
+  id: z.string().uuid("Invalid review ID"),
+});

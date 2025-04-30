@@ -3,7 +3,7 @@
 import { prisma } from "@/db/prisma";
 import { convertToPlainObject, formatError } from "../utils";
 import { revalidatePath } from "next/cache";
-import { insertProductSchema, updateProductSchema } from "../validators";
+import { insertProductSchema, updateProductSchema,reviewSchema,updateReviewSchema } from "../validators";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { LATEST_PRODUCT_LIMIT, PAGE_SIZE } from "../costants";
@@ -278,6 +278,224 @@ export async function uploadProductImages(files: File[]): Promise<string[]> {
     return uploadedImages;
   } catch (err) {
     console.error("Error uploading images:", err);
+    throw new Error(formatError(err));
+  }
+}
+
+
+
+// Create a new review
+export async function createReview(data: z.infer<typeof reviewSchema>) {
+  try {
+    // Validate the review data
+    const review = reviewSchema.parse(data);
+    
+    // Check if the product exists
+    const product = await prisma.product.findUnique({
+      where: { id: review.productId },
+    });
+    
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    
+    // Create the review
+    await prisma.review.create({
+      data: review,
+    });
+    
+    // Update the product's rating and numReviews
+    await updateProductRating(review.productId);
+    
+    // Revalidate product page
+    revalidatePath(`/products/${product.slug}`);
+    
+    return {
+      success: true,
+      message: "Review added successfully",
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+
+// Update an existing review
+export async function updateReview(data: z.infer<typeof updateReviewSchema>) {
+  try {
+    // Validate the review data
+    const review = updateReviewSchema.parse(data);
+    
+    // Check if the review exists
+    const reviewExists = await prisma.review.findUnique({
+      where: { id: review.id },
+    });
+    
+    if (!reviewExists) {
+      throw new Error("Review not found");
+    }
+    
+    // Update the review
+    await prisma.review.update({
+      where: { id: review.id },
+      data: {
+        title: review.title,
+        content: review.content,
+        rating: review.rating,
+      },
+    });
+    
+    // Update the product's rating
+    await updateProductRating(review.productId);
+    
+    // Get product slug for revalidation
+    const product = await prisma.product.findUnique({
+      where: { id: review.productId },
+      select: { slug: true },
+    });
+    
+    if (product) {
+      revalidatePath(`/products/${product.slug}`);
+    }
+    
+    return {
+      success: true,
+      message: "Review updated successfully",
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+
+// Delete a review
+export async function deleteReview(id: string) {
+  try {
+    // Check if the review exists
+    const review = await prisma.review.findUnique({
+      where: { id },
+    });
+    
+    if (!review) {
+      throw new Error("Review not found");
+    }
+    
+    const productId = review.id;
+    
+    // Delete the review
+    await prisma.review.delete({
+      where: { id },
+    });
+    
+    // Update the product's rating
+    await updateProductRating(productId);
+    
+    // Get product slug for revalidation
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { slug: true },
+    });
+    
+    if (product) {
+      revalidatePath(`/products/${product.slug}`);
+    }
+    
+    return {
+      success: true,
+      message: "Review deleted successfully",
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
+  }
+}
+
+// Get all reviews with pagination
+export async function getReviews({
+  page = 1,
+  limit = PAGE_SIZE,
+}: {
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const reviews = await prisma.review.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        id: "desc",
+      },
+    });
+    
+    const totalReviews = await prisma.review.count();
+    
+    return {
+      data: convertToPlainObject(reviews),
+      totalPages: Math.ceil(totalReviews / limit),
+      currentPage: page,
+    };
+  } catch (err) {
+    console.error("Error fetching reviews:", err);
+    throw new Error(formatError(err));
+  }
+}
+
+export async function getReviewsByProductId({
+  productId
+}: {
+  productId: string;
+}) {
+  try {
+    const reviews = await prisma.review.findMany({
+      where: { productId },
+      orderBy: {
+        id: "desc",
+      },
+    });
+    
+    return {
+      data: convertToPlainObject(reviews)
+    };
+  } catch (err) {
+    console.error("Error fetching product reviews:", err);
+    throw new Error(formatError(err));
+  }
+}
+
+// Helper function to update a product's rating based on its reviews
+async function updateProductRating(productId: string) {
+  try {
+    // Get all reviews for the product
+    const reviews = await prisma.review.findMany({
+      where: { productId },
+      select: { rating: true },
+    });
+    
+    // Calculate the average rating
+    let avgRating = 0;
+    if (reviews.length > 0) {
+      const totalRating = reviews.reduce((sum, review) => sum + Number(review.rating), 0);
+      avgRating = totalRating / reviews.length;
+    }
+    
+    // Update the product's rating and number of reviews
+    await prisma.product.update({
+      where: { id: productId },
+      data: {
+        rating: avgRating,
+        numReviews: reviews.length,
+      },
+    });
+    
+    return true;
+  } catch (err) {
+    console.error("Error updating product rating:", err);
     throw new Error(formatError(err));
   }
 }
