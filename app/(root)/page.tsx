@@ -20,7 +20,7 @@ const HomePage = async () => {
         <ProductList title="Newest Arrivals" data={latestProducts} />
       </div>
       <div className="space-y-8">
-        <InfoComponent/>
+        <InfoComponent />
       </div>
     </>
   );
