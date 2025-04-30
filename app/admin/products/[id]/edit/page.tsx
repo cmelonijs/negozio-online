@@ -24,8 +24,7 @@ export default async function EditProductPage({ params }: { params: { id: string
         <ProductForm 
           product={{
             ...product,
-            image: product.images[0] || '',
-            image2: product.images[1] || '',
+            images: product.images || [],
             price: Number(product.price),
             rating: Number(product.rating)
           }} 
