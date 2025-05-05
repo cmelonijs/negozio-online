@@ -16,7 +16,7 @@ import Link from "next/link";
 const ProductCard = ({ product }: { product: Product }) => {
   return (
     <Link href={`/products/${product.slug}`} passHref>
-    <Card key={product.slug} className="w-64 h-auto shadow-md">
+    <Card className="w-full h-full flex flex-col hover:shadow-lg transition-shadow">
       <div className="relative w-full h-48">
         <Image
           src={product.images[0]}
