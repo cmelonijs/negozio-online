@@ -44,6 +44,7 @@ export default async function ReviewsList({ productId }: { productId: string }) 
                 id: review.id,
                 userName: review.userName,
                 rating: Number(review.rating),
+                title: review.title || "Review", // Add the title field here
                 comment: review.content,
                 createdAt: review.date
               }} 

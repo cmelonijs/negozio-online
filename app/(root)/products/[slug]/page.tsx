@@ -72,6 +72,8 @@ export default async function ProductPage(props: {
             )}
           </div>
         </div>
+      </section>
+      <section className="w-full">
         <ReviewsList productId={product.id} />
       </section>
     </div>
