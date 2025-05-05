@@ -10,6 +10,8 @@ import { LATEST_PRODUCT_LIMIT, PAGE_SIZE } from "../costants";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { existsSync } from "fs";
+import { getUserById } from "./user.actions";
+import { auth } from "@/auth";
 
 // get latest products
 export async function getLatestProducts() {
@@ -497,5 +499,88 @@ async function updateProductRating(productId: string) {
   } catch (err) {
     console.error("Error updating product rating:", err);
     throw new Error(formatError(err));
+  }
+}
+export async function canUserReviewProduct(userId: string, productId: string) {
+  try {
+    // Check if the user has ordered this product and it was delivered
+    const orders = await prisma.order.findMany({
+      where: {
+        userId,
+        isDelivered: true,
+        isPaid: true,
+      }
+    });
+    
+    if (orders.length === 0) {
+      return false;
+    }
+    
+    // Check if user has already reviewed this product
+    const existingReview = await prisma.review.findFirst({
+      where: {
+        userId,
+        productId
+      }
+    });
+    
+    // User can review if they haven't already done so
+    return !existingReview;
+  } catch (error) {
+    console.error("Error checking if user can review product:", error);
+    return false;
+  }
+}
+
+export async function addReview(review: { 
+  productId: string; 
+  rating: number; 
+  comment: string;
+}) {
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      message: "You must be logged in to add a review",
+    };
+  }
+  
+  try {
+    const canReview = await canUserReviewProduct(session.user.id, review.productId);
+    
+    if (!canReview) {
+      return {
+        success: false,
+        message: "You can only review products you have purchased and received",
+      };
+    }
+    
+    const user = await getUserById(session.user.id);
+    
+    // Create the review
+    await prisma.review.create({
+      data: {
+        userId: session.user.id,
+        productId: review.productId,
+        rating: review.rating,
+        userName: user.name || "Anonymous",
+        title: "Product Review",
+        content: review.comment,
+      },
+    });
+    
+    // Update product rating and review count
+    await updateProductRating(review.productId);
+    
+    return {
+      success: true,
+      message: "Review added successfully!",
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: formatError(err),
+    };
   }
 }
