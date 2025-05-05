@@ -5,10 +5,18 @@ import { useEffect, useState } from "react";
 import { getLatestProducts } from "@/lib/actions/products.actions";
 import ProductList from "@/components/shared/product/product-list";
 import { Product } from "@/types";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 const priceRanges = [
-  { label: "Any", value: "any" },
-  { label: "1€ to 50€", value: "1-50" },
+  { label: "All", value: "any" },
+  { label: "1€ t 50€", value: "1-50" },
   { label: "51€ to 100€", value: "51-100" },
   { label: "101€ to 200€", value: "101-200" },
   { label: "201€ to 500€", value: "201-500" },
@@ -22,6 +30,7 @@ export default function ClientSearchPage() {
   const q = searchParams.get("q") || "";
   const category = searchParams.get("category") || "";
   const price = searchParams.get("price") || "any";
+  const sort = searchParams.get("sort") || "";
 
   const [filteredProducts, setFilteredProducts] = useState<Product[] | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
@@ -34,6 +43,10 @@ export default function ClientSearchPage() {
       params.set(key, value);
     }
     router.push(`/search?${params.toString()}`);
+  };
+
+  const handleClearFilters = () => {
+    router.push("/search");
   };
 
   useEffect(() => {
@@ -62,24 +75,38 @@ export default function ClientSearchPage() {
         return matchesName && matchesCategory && matchesPrice;
       });
 
-      setFilteredProducts(filtered);
+      const sorted = [...filtered].sort((a, b) => {
+        switch (sort) {
+          case "newest":
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          case "lowest":
+            return parseFloat(a.price as string) - parseFloat(b.price as string);
+          case "highest":
+            return parseFloat(b.price as string) - parseFloat(a.price as string);
+          default:
+            return 0;
+        }
+      });
+
+      setFilteredProducts(sorted);
     };
 
     fetchProducts();
-  }, [q, category, price]);
+  }, [q, category, price, sort]);
 
   if (!filteredProducts) return <div className="p-8 text-center">Loading...</div>;
 
   return (
-    <div className="flex flex-col lg:flex-row flex-wrap p-8 gap-4">
-      <aside className="w-48 min-w-[12rem] border-r pr-4">
+    <div className="flex flex-col lg:flex-row flex-wrap p-8 gap-6">
+      {/* Sideba */}
+      <aside className="w-full lg:w-60 border-r pr-6 mb-6 lg:mb-0">
         <h2 className="font-semibold text-lg mb-2">Department</h2>
         <ul className="mb-6 space-y-1">
           <li
             className={`cursor-pointer ${category === "" || category === "all" ? "font-bold" : ""}`}
             onClick={() => updateSearchParams("category", "any")}
           >
-            Any
+            All
           </li>
           {categories.map((cat) => (
             <li
@@ -91,9 +118,9 @@ export default function ClientSearchPage() {
             </li>
           ))}
         </ul>
-  
+
         <h2 className="font-semibold text-lg mb-2">Prices</h2>
-        <ul className="space-y-1">
+        <ul className="space-y-1 mb-6">
           {priceRanges.map((range) => (
             <li
               key={range.value}
@@ -105,20 +132,42 @@ export default function ClientSearchPage() {
           ))}
         </ul>
       </aside>
-  
+
+      {/* main content */}
       <main className="flex-1">
-        <h1 className="text-2xl font-semibold mb-4">
-          Results for &quot;{q}&quot;
-          {category && category !== "all" ? ` in ${category}` : ""}
-          {price !== "any" ? ` priced ${priceRanges.find(p => p.value === price)?.label}` : ""}
-        </h1>
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 gap-4 lg:gap-3">
+          <h1 className="text-2xl font-semibold">
+            Results for &quot;{q}&quot;
+            {category && category !== "all" ? ` in ${category}` : ""}
+            {price !== "any" ? ` priced ${priceRanges.find(p => p.value === price)?.label}` : ""}
+          </h1>
+
+          {/* Sort by and cvlear */}
+          <div className="flex items-center gap-3">
+            <Select onValueChange={(value) => updateSearchParams("sort", value)} defaultValue={sort}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest</SelectItem>
+                <SelectItem value="lowest">Price: Lowto High</SelectItem>
+                <SelectItem value="highest">Price: High to low</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Button variant="outline" onClick={handleClearFilters}>
+              Clear Filters
+            </Button>
+          </div>
+        </div>
+
+        {/* Product list */}
         {filteredProducts.length === 0 ? (
-          <p>No products found.</p>
+          <p>Nmo products found.</p>
         ) : (
           <ProductList title="Search Results" data={filteredProducts} />
         )}
       </main>
     </div>
   );
-  
 }
