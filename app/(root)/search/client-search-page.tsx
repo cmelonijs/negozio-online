@@ -32,7 +32,9 @@ export default function ClientSearchPage() {
   const price = searchParams.get("price") || "any";
   const sort = searchParams.get("sort") || "";
 
-  const [filteredProducts, setFilteredProducts] = useState<Product[] | null>(null);
+  const [filteredProducts, setFilteredProducts] = useState<Product[] | null>(
+    null
+  );
   const [categories, setCategories] = useState<string[]>([]);
 
   const updateSearchParams = (key: string, value: string) => {
@@ -78,11 +80,17 @@ export default function ClientSearchPage() {
       const sorted = [...filtered].sort((a, b) => {
         switch (sort) {
           case "newest":
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
           case "lowest":
-            return parseFloat(a.price as string) - parseFloat(b.price as string);
+            return (
+              parseFloat(a.price as string) - parseFloat(b.price as string)
+            );
           case "highest":
-            return parseFloat(b.price as string) - parseFloat(a.price as string);
+            return (
+              parseFloat(b.price as string) - parseFloat(a.price as string)
+            );
           default:
             return 0;
         }
@@ -94,7 +102,8 @@ export default function ClientSearchPage() {
     fetchProducts();
   }, [q, category, price, sort]);
 
-  if (!filteredProducts) return <div className="p-8 text-center">Loading...</div>;
+  if (!filteredProducts)
+    return <div className="p-8 text-center">Loading...</div>;
 
   return (
     <div className="flex flex-col lg:flex-row flex-wrap p-8 gap-6">
@@ -137,14 +146,19 @@ export default function ClientSearchPage() {
       <main className="flex-1">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 gap-4 lg:gap-3">
           <h1 className="text-2xl font-semibold">
-            Results for &quot;{q}&quot;
+            Results for {q ? q : "all"}
             {category && category !== "all" ? ` in ${category}` : ""}
-            {price !== "any" ? ` priced ${priceRanges.find(p => p.value === price)?.label}` : ""}
+            {price !== "any"
+              ? ` priced ${priceRanges.find((p) => p.value === price)?.label}`
+              : ""}
           </h1>
 
           {/* Sort by and cvlear */}
           <div className="flex items-center gap-3">
-            <Select onValueChange={(value) => updateSearchParams("sort", value)} defaultValue={sort}>
+            <Select
+              onValueChange={(value) => updateSearchParams("sort", value)}
+              defaultValue={sort}
+            >
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
