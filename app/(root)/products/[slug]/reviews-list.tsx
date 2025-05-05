@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import ReviewItem from "./review-item";
 import { canUserReviewProduct, getReviewsByProductId } from "@/lib/actions/products.actions";
-import AddReviewForm from "@/components/shared/add-review-form";
+import ReviewFormModal from "@/components/shared/review-form-modal";
 
 export default async function ReviewsList({ productId }: { productId: string }) {
   try {
@@ -20,7 +20,7 @@ export default async function ReviewsList({ productId }: { productId: string }) 
           <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
           {canReview && (
             <div className="mb-6">
-              <AddReviewForm productId={productId} />
+              <ReviewFormModal productId={productId} />
             </div>
           )}
           <p>No reviews yet. Be the first to review this product!</p>
@@ -33,7 +33,7 @@ export default async function ReviewsList({ productId }: { productId: string }) 
         <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
         {canReview && (
           <div className="mb-6">
-            <AddReviewForm productId={productId} />
+            <ReviewFormModal productId={productId} />
           </div>
         )}
         <div className="space-y-4">
@@ -44,7 +44,7 @@ export default async function ReviewsList({ productId }: { productId: string }) 
                 id: review.id,
                 userName: review.userName,
                 rating: Number(review.rating),
-                title: review.title || "Review", // Add the title field here
+                title: review.title || "Review",
                 comment: review.content,
                 createdAt: review.date
               }} 

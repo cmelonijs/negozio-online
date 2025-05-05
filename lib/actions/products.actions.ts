@@ -535,6 +535,7 @@ export async function canUserReviewProduct(userId: string, productId: string) {
 export async function addReview(review: { 
   productId: string; 
   rating: number; 
+  title: string; 
   comment: string;
 }) {
   const session = await auth();
@@ -565,7 +566,7 @@ export async function addReview(review: {
         productId: review.productId,
         rating: review.rating,
         userName: user.name || "Anonymous",
-        title: "Product Review",
+        title: review.title,
         content: review.comment,
       },
     });
