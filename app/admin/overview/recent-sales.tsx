@@ -1,9 +1,19 @@
-"use client"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+"use client";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Link from "next/link";
+
 
 type Sale = {
+  id: string;
   name: string;
-  date: string; 
+  date: string;
   totalPrice: number;
 };
 
@@ -30,11 +40,17 @@ const RecentSales = ({ sales }: Props) => {
               <TableHead className="text-gray-700 dark:text-gray-300">
                 Total
               </TableHead>
+              <TableHead className="text-gray-700 dark:text-gray-300">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white dark:bg-gray-900">
             {sales.map((sale, index) => (
-              <TableRow key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+              <TableRow
+                key={index}
+                className="hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
                 <TableCell className="text-gray-900 dark:text-gray-100">
                   {sale.name}
                 </TableCell>
@@ -43,6 +59,14 @@ const RecentSales = ({ sales }: Props) => {
                 </TableCell>
                 <TableCell className="font-medium text-gray-800 dark:text-gray-200">
                   ${sale.totalPrice.toFixed(2)}
+                </TableCell>
+                <TableCell className="font-medium text-gray-800 dark:text-gray-200">
+                  <Link
+                    href={`/order/${sale.id}`}
+                    className="text-white-500 hover:underline hover:text-yellow-600"
+                  >
+                    Details
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

@@ -32,7 +32,7 @@ const OrdersTable = ({ orders, totalPages, currentPage}: {  orders: Order[]; tot
     const closeDeleteModal = () => {
         if (!isPending) {
             setIsModalOpen(false);
-            setTimeout(() => setOrderToDelete(null), 300); // Clear ID after close animation
+            setTimeout(() => setOrderToDelete(null), 300); 
         }
     };
 

@@ -4,6 +4,7 @@ import StatBox from "./stat-box";
 import RecentSales from "./recent-sales";
 
 type Sale = {
+  id: string;
   name: string;
   date: string;
   totalPrice: number;
@@ -21,6 +22,7 @@ const OverviewsPage = async () => {
 
   if (Array.isArray(salesResponse)) {
     formattedSales = salesResponse.map((sale) => ({
+      id: sale.id,
       name: sale.name,
       date: sale.date.toISOString(),
       totalPrice: parseFloat(sale.totalPrice.toString()),
