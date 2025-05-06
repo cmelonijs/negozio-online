@@ -36,6 +36,9 @@ const ProductFilter = ({ data }: Props) => {
     if (searchTerm) params.set("q", searchTerm);
     if (selectedname && selectedname !== "all") params.set("category", selectedname);
     router.push(`/search?${params.toString()}`);
+
+    setSearchTerm("");
+    setSelectedname("");
   };
 
   return (
