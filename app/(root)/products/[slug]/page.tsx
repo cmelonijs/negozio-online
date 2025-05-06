@@ -4,6 +4,7 @@ import { getProductBySlug } from "@/lib/actions/products.actions";
 import AddToCartButton from "@/components/shared/product/add-to-cart-button";
 import { getMyCart } from "@/lib/actions/cart.actions";
 import QuantityComponent from "./quantity";
+import ReviewsList from "./reviews-list";
 
 export default async function ProductPage(props: {
   params: Promise<{ slug: string }>;
@@ -71,6 +72,9 @@ export default async function ProductPage(props: {
             )}
           </div>
         </div>
+      </section>
+      <section className="w-full">
+        <ReviewsList productId={product.id} />
       </section>
     </div>
   );
