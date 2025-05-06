@@ -507,6 +507,11 @@ export async function canUserReviewProduct(userId: string, productId: string) {
     const orders = await prisma.order.findMany({
       where: {
         userId,
+        OrderItem: {
+          some: {
+            productId,
+          },
+        },
         isDelivered: true,
         isPaid: true,
       }
