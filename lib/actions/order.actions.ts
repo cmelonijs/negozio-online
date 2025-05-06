@@ -415,6 +415,7 @@ export async function getRecentSales(limit = 5) {
       },
       take: limit,
       select: {
+        id: true, 
         createdAt: true,
         totalPrice: true,
         user: {
@@ -426,6 +427,7 @@ export async function getRecentSales(limit = 5) {
     });
 
     return recentSales.map((sale) => ({
+      id: sale.id, 
       name: sale.user?.name ?? "Unknown User",
       date: sale.createdAt,
       totalPrice: sale.totalPrice,
