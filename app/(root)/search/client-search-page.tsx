@@ -48,7 +48,8 @@ export default function ClientSearchPage() {
   };
 
   const handleClearFilters = () => {
-    router.push("/search");
+    router.replace("/search");
+    setFilteredProducts(null); //to reset everythinh
   };
 
   useEffect(() => {
