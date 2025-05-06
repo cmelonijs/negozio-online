@@ -31,7 +31,7 @@ export default function ReviewFormModal({ productId }: { productId: string }) {
               </button>
             </div>
             <div className="p-4">
-              <AddReviewForm productId={productId} />
+              <AddReviewForm productId={productId} onSuccess={closeModal} />
             </div>
           </div>
         </div>

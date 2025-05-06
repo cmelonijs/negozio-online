@@ -2,16 +2,14 @@
 
 import { useState } from "react";
 import { Star } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { addReview } from "@/lib/actions/products.actions";
 
-export default function AddReviewForm({ productId }: { productId: string }) {
+export default function AddReviewForm({ productId, onSuccess }: { productId: string; onSuccess?: () => void }) {
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState("");
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: string; text: string } | null>(null);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +27,15 @@ export default function AddReviewForm({ productId }: { productId: string }) {
         setMessage({ type: "success", text: "Review submitted successfully" });
         setTitle("");
         setComment("");
-        // Refresh the page to show the new review
-        router.refresh();
+        
+        // Call onSuccess callback first to close the modal
+        if (onSuccess) {
+          onSuccess();
+        }
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
       } else {
         setMessage({ type: "error", text: result.message });
       }
