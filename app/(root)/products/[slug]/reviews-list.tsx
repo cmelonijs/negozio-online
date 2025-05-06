@@ -74,12 +74,16 @@ export default function ReviewsList({ productId }: { productId: string }) {
     return (
       <div className="w-full mt-8">
         <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
-        {canReview && (
-          <div className="mb-6">
-            <ReviewFormModal productId={productId} />
-          </div>
+        {canReview ? (
+          <>
+            <div className="mb-6">
+              <ReviewFormModal productId={productId} />
+            </div>
+            <p>No reviews yet. Be the first to review this product!</p>
+          </>
+        ) : (
+          <p>No reviews yet. Purchase this product to leave a review!</p>
         )}
-        <p>No reviews yet. Be the first to review this product!</p>
       </div>
     );
   }
