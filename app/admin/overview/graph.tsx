@@ -10,12 +10,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
+import { useTheme } from "next-themes";
 
 type GraphProps = {
   data: { month: string; total: number }[]; 
 };
 
 export function Graph({ data }: GraphProps) {
+
+    const { resolvedTheme } = useTheme(); 
+  const isDarkMode = resolvedTheme === "dark";
+
   return (
     <Card className="p-4 flex flex-col justify-between rounded-lg border transition-all duration-300 hover:border-gray-500 dark:hover:border-white">
       <CardHeader>
@@ -42,7 +47,7 @@ export function Graph({ data }: GraphProps) {
               tickFormatter={(value) => `$${value}`} 
             />
 
-            <Bar dataKey="total" fill="var(--color-desktop)" radius={8} />
+            <Bar dataKey="total" fill={isDarkMode ? "#ffffff" : "var(--color-desktop)"} className="dark:white" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
