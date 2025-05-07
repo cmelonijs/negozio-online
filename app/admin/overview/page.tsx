@@ -2,6 +2,7 @@ import { adminDashboardStats } from "@/lib/actions/user.actions";
 import { getRecentSales } from "@/lib/actions/order.actions";
 import StatBox from "./stat-box";
 import RecentSales from "./recent-sales";
+import { Graph } from "./graph";
 
 type Sale = {
   id: string;
@@ -38,7 +39,10 @@ const OverviewsPage = async () => {
         <StatBox title="Customers" value={totalUsers ?? 0} iconType="users" />
         <StatBox title="Products" value={totalProducts ?? 0} iconType="products" />
       </div>
-      <RecentSales sales={formattedSales} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <Graph />
+    <RecentSales sales={formattedSales} />
+  </div>
     </>
   );
 };
