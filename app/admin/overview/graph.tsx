@@ -47,7 +47,7 @@ export function Graph({ data }: GraphProps) {
               tickFormatter={(value) => `$${value}`} 
             />
 
-            <Bar dataKey="total" fill={isDarkMode ? "#ffffff" : "var(--color-desktop)"} className="dark:white" radius={8} />
+            <Bar dataKey="total" fill={isDarkMode ? "#ffffff" : "#040817"} className="dark:white" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
