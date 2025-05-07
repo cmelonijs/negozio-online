@@ -1,5 +1,5 @@
 import { adminDashboardStats } from "@/lib/actions/user.actions";
-import { getRecentSales } from "@/lib/actions/order.actions";
+import { getOrdersByMonth, getRecentSales } from "@/lib/actions/order.actions";
 import StatBox from "./stat-box";
 import RecentSales from "./recent-sales";
 import { Graph } from "./graph";
@@ -30,6 +30,8 @@ const OverviewsPage = async () => {
     }));
   }
 
+  const chartData = await getOrdersByMonth(); 
+
   return (
     <>
       <h1 className="text-2xl font-semibold mb-4">This is the overview page</h1>
@@ -40,7 +42,7 @@ const OverviewsPage = async () => {
         <StatBox title="Products" value={totalProducts ?? 0} iconType="products" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-    <Graph />
+    <Graph data={chartData }/>
     <RecentSales sales={formattedSales} />
   </div>
     </>
