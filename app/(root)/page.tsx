@@ -7,8 +7,8 @@ const HomePage = async () => {
   const latestProducts = await getLatestProducts();
 
   const images = [
-    { id: 1, src: "../../images/banner-1.jpg", alt: "Banner 1" },
-    { id: 2, src: "../../images/banner-2.jpg", alt: "Banner 2" },
+    { id: 1, src: "/images/banner-1.jpg", alt: "Banner 1" },
+    { id: 2, src: "/images/banner-2.jpg", alt: "Banner 2" },
   ];
 
   return (
