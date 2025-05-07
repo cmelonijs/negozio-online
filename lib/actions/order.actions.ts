@@ -439,3 +439,39 @@ export async function getRecentSales(limit = 5) {
     };
   }
 }
+
+
+export async function getOrdersByMonth() {
+  const orders = await prisma.order.findMany({
+    select: {
+      totalPrice: true,
+      createdAt: true,
+    },
+  });
+
+  const totalsByMonth: Record<string, number> = {};
+
+  orders.forEach((order) => {
+    const date = new Date(order.createdAt);
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); 
+    const year = date.getFullYear().toString().slice(-2);
+    const endDate = `${month}/${year}`; 
+
+    if (!totalsByMonth[endDate]) {
+      totalsByMonth[endDate] = 0;
+    }
+
+    totalsByMonth[endDate] += Number(order.totalPrice);
+  });
+
+  // Convert to sorted array (optional but useful for charts)
+  const result = Object.entries(totalsByMonth)
+    .map(([month, total]) => ({ month, total }))
+    .sort((a, b) => {
+      const [aMonth, aYear] = a.month.split("/").map(Number);
+      const [bMonth, bYear] = b.month.split("/").map(Number);
+      return aYear !== bYear ? aYear - bYear : aMonth - bMonth;
+    });
+
+  return result;
+}
