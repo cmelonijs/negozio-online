@@ -5,8 +5,9 @@ import { CircleArrowLeft, CircleArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { getLatestProducts } from "@/lib/actions/products.actions";
+import Image from "next/image";
 
-const CarouselClient = ({ images }: { images: { id: number; src: string; alt: string }[] }) => {
+const CarouselClient = ({ images }: { images: { id: number; src: string; alt: string; width?: number; height?: number }[] }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const router = useRouter();
 
@@ -20,8 +21,7 @@ const CarouselClient = ({ images }: { images: { id: number; src: string; alt: st
 
   const handleBannerClick = async () => {
     const latestProducts = await getLatestProducts();
-
-    const randomProduct =
+       const randomProduct =
       latestProducts[Math.floor(Math.random() * latestProducts.length)];
 
     router.push(`/products/${randomProduct.slug}`);
@@ -35,12 +35,15 @@ const CarouselClient = ({ images }: { images: { id: number; src: string; alt: st
         onClick={handleBannerClick}
       >
         {images.map((image) => (
-          <img
-            key={image.id}
-            src={image.src}
-            alt={image.alt}
-            className="w-full h-auto object-cover"
-          />
+          <div key={image.id} className="flex-shrink-0 w-full">
+            <Image
+              src={image.src}
+              alt={image.alt}
+              width={image.width ?? 600}  
+              height={image.height ?? 400} 
+              className="w-full h-auto object-cover"
+            />
+          </div>
         ))}
       </div>
 
