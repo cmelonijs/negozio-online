@@ -3,8 +3,9 @@ import { getProductById } from "@/lib/actions/products.actions";
 import ProductForm from "../../product-form";
 import { notFound } from "next/navigation";
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
-  const product = await getProductById(params.id);
+export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const paramsData = await params;
+  const product = await getProductById(paramsData.id);
   
   // Handle case where product is not found
   if (!product) {
