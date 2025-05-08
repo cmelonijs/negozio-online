@@ -2,50 +2,96 @@
 
 import { useState } from "react";
 import { Star } from "lucide-react";
-import { addReview } from "@/lib/actions/products.actions";
+import { addReview, updateReview } from "@/lib/actions/products.actions";
 
-export default function AddReviewForm({ productId, onSuccess }: { productId: string; onSuccess?: () => void }) {
-  const [rating, setRating] = useState(5);
-  const [title, setTitle] = useState("");
-  const [comment, setComment] = useState("");
+interface AddReviewFormProps {
+  productId: string;
+  onSuccess?: () => void;
+  existingReview?: {
+    id: string;
+    title: string;
+    content: string;
+    rating: number;
+  };
+}
+export default function AddReviewForm({ productId, onSuccess, existingReview }: AddReviewFormProps) {
+  const [rating, setRating] = useState(existingReview?.rating ?? 5);
+  const [title, setTitle] = useState(existingReview?.title ?? "");
+  const [comment, setComment] = useState(existingReview?.content ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: string; text: string } | null>(null);
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
+    
+  //   try {
+  //     const result = await addReview({
+  //       productId,
+  //       rating,
+  //       title,
+  //       comment
+  //     });
+      
+  //     if (result.success) {
+  //       setMessage({ type: "success", text: "Review submitted successfully" });
+  //       setTitle("");
+  //       setComment("");
+        
+  //       // Call onSuccess callback first to close the modal
+  //       if (onSuccess) {
+  //         onSuccess();
+  //       }
+        
+  //       setTimeout(() => {
+  //         window.location.reload();
+  //       }, 300);
+  //     } else {
+  //       setMessage({ type: "error", text: result.message });
+  //     }
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   } catch (error) {
+  //     setMessage({ type: "error", text: "Failed to submit review" });
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+  
     try {
-      const result = await addReview({
-        productId,
-        rating,
-        title,
-        comment
-      });
-      
+      const result = existingReview
+        ? await updateReview({
+          id: existingReview.id,
+          productId,
+          rating,
+          title,
+          content: comment,
+          userId: "",
+          userName: ""
+        })
+        : await addReview({
+            productId,
+            rating,
+            title,
+            comment,
+          });
+  
       if (result.success) {
         setMessage({ type: "success", text: "Review submitted successfully" });
-        setTitle("");
-        setComment("");
-        
-        // Call onSuccess callback first to close the modal
-        if (onSuccess) {
-          onSuccess();
-        }
-        
-        setTimeout(() => {
-          window.location.reload();
-        }, 300);
+        if (onSuccess) onSuccess();
+        setTimeout(() => window.location.reload(), 300);
       } else {
         setMessage({ type: "error", text: result.message });
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "Failed to submit review" });
     } finally {
       setIsSubmitting(false);
     }
   };
+  
 
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm">

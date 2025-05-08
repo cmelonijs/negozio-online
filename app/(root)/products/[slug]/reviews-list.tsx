@@ -6,9 +6,18 @@ import { getSession } from "next-auth/react";
 import ReviewItem from "./review-item";
 import { canUserReviewProduct, getReviewsByProductId } from "@/lib/actions/products.actions";
 import ReviewFormModal from "@/components/shared/review-form-modal";
+interface Review {
+  id: string;
+  title: string;
+  userName: string;
+  rating: number;
+  content: string;
+  date: Date;
+  userId: string; // Added userId property
+}
 
 export default function ReviewsList({ productId }: { productId: string }) {
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [canReview, setCanReview] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -19,7 +28,10 @@ export default function ReviewsList({ productId }: { productId: string }) {
       try {
         setLoading(true);
         const { data } = await getReviewsByProductId({ productId });
-        setReviews(data || []);
+        setReviews((data || []).map((review: any) => ({
+          ...review,
+          rating: Number(review.rating),
+        })));
       } catch (err) {
         console.error("Error fetching reviews:", err);
         setError(err instanceof Error ? err : new Error("Failed to fetch reviews"));
@@ -31,26 +43,51 @@ export default function ReviewsList({ productId }: { productId: string }) {
     fetchReviews();
   }, [productId]);
 
-  useEffect(() => {
-    const checkCanReview = async () => {
-      try {
-        // Get session directly without using useSession hook
-        const session = await getSession();
+  // useEffect(() => {
+  //   const checkCanReview = async () => {
+  //     try {
+  //       // Get session directly without using useSession hook
+  //       const session = await getSession();
         
-        if (session?.user?.id) {
-          const canUserReview = await canUserReviewProduct(session.user.id, productId);
-          setCanReview(canUserReview);
-        } else {
-          setCanReview(false);
-        }
-      } catch (err) {
-        console.error("Error checking review eligibility:", err);
+  //       if (session?.user?.id) {
+  //         const canUserReview = await canUserReviewProduct(session.user.id, productId);
+  //         setCanReview(canUserReview);
+  //       } else {
+  //         setCanReview(false);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error checking review eligibility:", err);
+  //       setCanReview(false);
+  //     }
+  //   };
+
+  //   checkCanReview();
+  // }, [productId]);
+
+ // In ReviewsList.tsx
+const [userId, setUserId] = useState<string | null>(null);
+
+useEffect(() => {
+  const checkCanReview = async () => {
+    try {
+      const session = await getSession();
+      if (session?.user?.id) {
+        setUserId(session.user.id);
+        const canUserReview = await canUserReviewProduct(session.user.id, productId);
+        setCanReview(canUserReview);
+      } else {
+        setUserId(null);
         setCanReview(false);
       }
-    };
+    } catch (err) {
+      console.error("Error checking review eligibility:", err);
+      setCanReview(false);
+    }
+  };
 
-    checkCanReview();
-  }, [productId]);
+  checkCanReview();
+}, [productId]);
+ 
 
   if (loading) {
     return (
@@ -77,7 +114,7 @@ export default function ReviewsList({ productId }: { productId: string }) {
         {canReview ? (
           <>
             <div className="mb-6">
-              <ReviewFormModal productId={productId} />
+              <ReviewFormModal productId={productId} isOpen={false} />
             </div>
             <p>No reviews yet. Be the first to review this product!</p>
           </>
@@ -93,22 +130,37 @@ export default function ReviewsList({ productId }: { productId: string }) {
       <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
       {canReview && (
         <div className="mb-6">
-          <ReviewFormModal productId={productId} />
+          <ReviewFormModal productId={productId} isOpen={false} />
         </div>
       )}
       <div className="space-y-4">
         {reviews.map((review) => (
-          <ReviewItem 
-            key={review.id} 
-            review={{
-              id: review.id,
-              userName: review.userName,
-              rating: Number(review.rating),
-              title: review.title || "Review",
-              comment: review.content,
-              createdAt: review.date
-            }} 
-          />
+          // <ReviewItem 
+          //   key={review.id} 
+          //   review={{
+          //     id: review.id,
+          //     userName: review.userName,
+          //     rating: Number(review.rating),
+          //     title: review.title || "Review",
+          //     comment: review.content,
+          //     createdAt: review.date
+          //   }} 
+          // />
+          <ReviewItem
+  key={review.id}
+  review={{
+    id: review.id,
+    userName: review.userName,
+    rating: Number(review.rating),
+    title: review.title || "Review",
+    comment: review.content,
+    createdAt: review.date,
+  }}
+  currentUserId={userId}
+  reviewUserId={review.userId} // Include userId with your review from backend
+  productId={productId}
+/>
+
         ))}
       </div>
     </div>
