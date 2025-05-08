@@ -69,7 +69,7 @@ const ReviewItem = ({
           {isOwner && (
             <Button
               onClick={() => setIsEditOpen(true)}
-              className="text-sm text-blue-600 hover:underline px-2 py-1"
+              className="text-sm text-red-600 hover:underline px-3 py-1 border border-red-600 rounded-md"
               variant="ghost"
             >
               Edit
