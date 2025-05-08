@@ -10,7 +10,7 @@ export default async function ProductPage(props: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await props.params;
-  const cart =  await getMyCart();
+  const cart = await getMyCart();
   const product = await getProductBySlug(slug);
 
   if (!product) notFound();
@@ -48,9 +48,9 @@ export default async function ProductPage(props: {
                 {product.stock > 0 ? "In Stock" : "Out of Stock"}
               </span>
             </p>
-             {product.stock > 0 && (
+            {product.stock > 0 && (
               <div className="flex-center flex-col gap-4">
-                {!cart?.items?.find(i => i.productId === product.id) && (
+                {!cart?.items?.find((i) => i.productId === product.id) && (
                   <AddToCartButton
                     cart={cart}
                     item={{
@@ -63,9 +63,11 @@ export default async function ProductPage(props: {
                     }}
                   />
                 )}
-                {cart?.items?.find(i => i.productId === product.id) && (
+                {cart?.items?.find((i) => i.productId === product.id) && (
                   <div className="quantity-div">
-                    <QuantityComponent item={cart.items.find(i => i.productId === product.id)!} />
+                    <QuantityComponent
+                      item={cart.items.find((i) => i.productId === product.id)!}
+                    />
                   </div>
                 )}
               </div>
