@@ -4,7 +4,10 @@
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import ReviewItem from "./review-item";
-import { canUserReviewProduct, getReviewsByProductId } from "@/lib/actions/products.actions";
+import {
+  canUserReviewProduct,
+  getReviewsByProductId,
+} from "@/lib/actions/products.actions";
 import ReviewFormModal from "@/components/shared/review-form-modal";
 interface Review {
   id: string;
@@ -13,7 +16,7 @@ interface Review {
   rating: number;
   content: string;
   date: Date;
-  userId: string; // Added userId property
+  userId: string;
 }
 
 export default function ReviewsList({ productId }: { productId: string }) {
@@ -28,13 +31,17 @@ export default function ReviewsList({ productId }: { productId: string }) {
       try {
         setLoading(true);
         const { data } = await getReviewsByProductId({ productId });
-        setReviews((data || []).map((review: any) => ({
-          ...review,
-          rating: Number(review.rating),
-        })));
+        setReviews(
+          (data || []).map((review: any) => ({
+            ...review,
+            rating: Number(review.rating),
+          }))
+        );
       } catch (err) {
         console.error("Error fetching reviews:", err);
-        setError(err instanceof Error ? err : new Error("Failed to fetch reviews"));
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch reviews")
+        );
       } finally {
         setLoading(false);
       }
@@ -43,51 +50,31 @@ export default function ReviewsList({ productId }: { productId: string }) {
     fetchReviews();
   }, [productId]);
 
-  // useEffect(() => {
-  //   const checkCanReview = async () => {
-  //     try {
-  //       // Get session directly without using useSession hook
-  //       const session = await getSession();
-        
-  //       if (session?.user?.id) {
-  //         const canUserReview = await canUserReviewProduct(session.user.id, productId);
-  //         setCanReview(canUserReview);
-  //       } else {
-  //         setCanReview(false);
-  //       }
-  //     } catch (err) {
-  //       console.error("Error checking review eligibility:", err);
-  //       setCanReview(false);
-  //     }
-  //   };
+  const [userId, setUserId] = useState<string | null>(null);
 
-  //   checkCanReview();
-  // }, [productId]);
-
- // In ReviewsList.tsx
-const [userId, setUserId] = useState<string | null>(null);
-
-useEffect(() => {
-  const checkCanReview = async () => {
-    try {
-      const session = await getSession();
-      if (session?.user?.id) {
-        setUserId(session.user.id);
-        const canUserReview = await canUserReviewProduct(session.user.id, productId);
-        setCanReview(canUserReview);
-      } else {
-        setUserId(null);
+  useEffect(() => {
+    const checkCanReview = async () => {
+      try {
+        const session = await getSession();
+        if (session?.user?.id) {
+          setUserId(session.user.id);
+          const canUserReview = await canUserReviewProduct(
+            session.user.id,
+            productId
+          );
+          setCanReview(canUserReview);
+        } else {
+          setUserId(null);
+          setCanReview(false);
+        }
+      } catch (err) {
+        console.error("Error checking review eligibility:", err);
         setCanReview(false);
       }
-    } catch (err) {
-      console.error("Error checking review eligibility:", err);
-      setCanReview(false);
-    }
-  };
+    };
 
-  checkCanReview();
-}, [productId]);
- 
+    checkCanReview();
+  }, [productId]);
 
   if (loading) {
     return (
@@ -135,32 +122,20 @@ useEffect(() => {
       )}
       <div className="space-y-4">
         {reviews.map((review) => (
-          // <ReviewItem 
-          //   key={review.id} 
-          //   review={{
-          //     id: review.id,
-          //     userName: review.userName,
-          //     rating: Number(review.rating),
-          //     title: review.title || "Review",
-          //     comment: review.content,
-          //     createdAt: review.date
-          //   }} 
-          // />
           <ReviewItem
-  key={review.id}
-  review={{
-    id: review.id,
-    userName: review.userName,
-    rating: Number(review.rating),
-    title: review.title || "Review",
-    comment: review.content,
-    createdAt: review.date,
-  }}
-  currentUserId={userId}
-  reviewUserId={review.userId} // Include userId with your review from backend
-  productId={productId}
-/>
-
+            key={review.id}
+            review={{
+              id: review.id,
+              userName: review.userName,
+              rating: Number(review.rating),
+              title: review.title || "Review",
+              comment: review.content,
+              createdAt: review.date,
+            }}
+            currentUserId={userId}
+            reviewUserId={review.userId}
+            productId={productId}
+          />
         ))}
       </div>
     </div>

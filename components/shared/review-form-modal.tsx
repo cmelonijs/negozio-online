@@ -11,7 +11,7 @@ interface ReviewFormModalProps {
     rating: number;
   };
   onClose?: () => void;
-  isOpen: boolean; // 👈 pass this from parent
+  isOpen: boolean;
 }
 
 export default function ReviewFormModal({
@@ -24,7 +24,7 @@ export default function ReviewFormModal({
     onClose?.();
   };
 
-  if (!isOpen) return null; // 👈 only render when isOpen is true
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm">
