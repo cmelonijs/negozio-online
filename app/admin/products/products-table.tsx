@@ -21,10 +21,12 @@ const ProductsTable = ({
   products,
   totalPages,
   currentPage,
+  searchQuery,
 }: {
   products: { id: string; name: string; price: number; category: string; stock: number; rating: number }[];
   totalPages: number;
   currentPage: number;
+  searchQuery?: string;
 }) => {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -128,7 +130,12 @@ const ProductsTable = ({
       )}
       
       <div className="mt-4">
-        <Pagination page={currentPage} totalPages={totalPages} urlParamName="page" />
+        <Pagination 
+          page={currentPage} 
+          totalPages={totalPages} 
+          urlParamName="page" 
+          extraParams={searchQuery ? { q: searchQuery } : {}}
+        />
       </div>
     </div>
   );

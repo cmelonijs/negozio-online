@@ -6,7 +6,8 @@ import ProductsTable from "./products-table";
 const ProductsPage = async ({ 
   searchParams 
 }: { 
-  searchParams: Promise<{ 
+  searchParams: Promise<{
+    q: string; 
     page?: string;
     query?: string;
     category?: string;
@@ -17,7 +18,7 @@ const ProductsPage = async ({
 }) => {
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
-  const query = resolvedSearchParams.query || '';
+  const query = resolvedSearchParams.q || ''; // Changed from query to q to match the search param name
   
   const { data: products, totalPages } = await getAllProducts({
     query,
@@ -58,7 +59,8 @@ const ProductsPage = async ({
       <ProductsTable 
         products={serializedProducts}
         totalPages={totalPages} 
-        currentPage={currentPage} 
+        currentPage={currentPage}
+        searchQuery={query} // Pass the query to the ProductsTable
       />
     </div>
   );
