@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Pagination from "@/components/shared/pagination";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { deleteProduct } from "@/lib/actions/products.actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -32,6 +32,8 @@ const ProductsTable = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const router = useRouter();
+
+  const tableHeadersTitle = ["ID", "NAME", "PRICE", "CATEGORY", "STOCK", "RATING", "ACTIONS"];
 
   const openDeleteModal = (productId: string) => {
     setProductToDelete(productId);
@@ -67,56 +69,59 @@ const ProductsTable = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-start">
-      <div className="overflow-x-auto rounded-lg border dark:border-gray-700 w-full">
-        <Table className="min-w-full bg-white dark:bg-gray-800 rounded-lg">
-          <TableHeader className="bg-gray-100 dark:bg-gray-700">
-            <TableRow>
-              <TableHead className="py-3 px-4 dark:text-gray-200">ID</TableHead>
-              <TableHead className="py-3 px-4 dark:text-gray-200">NAME</TableHead>
-              <TableHead className="py-3 px-4 dark:text-gray-200">PRICE</TableHead>
-              <TableHead className="py-3 px-4 dark:text-gray-200">CATEGORY</TableHead>
-              <TableHead className="py-3 px-4 dark:text-gray-200">STOCK</TableHead>
-              <TableHead className="py-3 px-4 dark:text-gray-200">RATING</TableHead>
-              <TableHead className="py-3 px-4 dark:text-gray-200">ACTIONS</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.map((product) => (
-              <TableRow key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <TableCell className="py-3 px-4 dark:text-gray-200">
-                  ...{product.id.slice(-6)}
-                </TableCell>
-                <TableCell className="py-3 px-4 dark:text-gray-200">{product.name}</TableCell>
-                <TableCell className="py-3 px-4 dark:text-gray-200">${product.price}</TableCell>
-                <TableCell className="py-3 px-4 dark:text-gray-200">{product.category}</TableCell>
-                <TableCell className="py-3 px-4 dark:text-gray-200">{product.stock}</TableCell>
-                <TableCell className="py-3 px-4 dark:text-gray-200">{product.rating}</TableCell>
-                <TableCell className="py-3 px-4">
-                  <div className="flex space-x-2">
-                    <Link href={`/admin/products/${product.id}/edit`}>
-                      <Button size="sm" variant="outline" className="text-base font-medium">
-                        Edit
-                      </Button>
-                    </Link>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      className="text-base font-medium"
-                      onClick={() => openDeleteModal(product.id)}
-                      disabled={isDeleting === product.id}
-                    >
-                      {isDeleting === product.id ? "Deleting..." : "Delete"}
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
+    <Fragment>
+      <Table className="bg-white dark:bg-black w-full table-auto">
+        <TableHeader>
+          <TableRow>
+            {tableHeadersTitle.map((header, index) => (
+              <TableHead key={index} className="px-4 py-2">
+                {header}
+              </TableHead>
             ))}
-          </TableBody>
-        </Table>
-      </div>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {products.map((product) => (
+            <TableRow
+              key={product.id}
+              className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <TableCell className="px-4 py-2">
+                ...{product.id.slice(-6)}
+              </TableCell>
+              <TableCell className="px-4 py-2">{product.name}</TableCell>
+              <TableCell className="px-4 py-2">${product.price}</TableCell>
+              <TableCell className="px-4 py-2">{product.category}</TableCell>
+              <TableCell className="px-4 py-2">{product.stock}</TableCell>
+              <TableCell className="px-4 py-2">{product.rating}</TableCell>
+              <TableCell className="px-4 py-2 gap-2 flex items-center">
+                <Button variant="outline">
+                  <Link href={`/admin/products/${product.id}/edit`}>
+                    Edit
+                  </Link>
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => openDeleteModal(product.id)}
+                  disabled={isDeleting === product.id}
+                >
+                  {isDeleting === product.id ? "Deleting..." : "Delete"}
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       
-      {/* Using the shared DeleteModal component */}
+      <div className="mt-4">
+        <Pagination 
+          page={currentPage} 
+          totalPages={totalPages} 
+          urlParamName="page" 
+          extraParams={searchQuery ? { q: searchQuery } : {}}
+        />
+      </div>
+
       {productToDelete && (
         <DeleteModal
           isOpen={isModalOpen}
@@ -128,16 +133,7 @@ const ProductsTable = ({
           loading={isDeleting !== null}
         />
       )}
-      
-      <div className="mt-4">
-        <Pagination 
-          page={currentPage} 
-          totalPages={totalPages} 
-          urlParamName="page" 
-          extraParams={searchQuery ? { q: searchQuery } : {}}
-        />
-      </div>
-    </div>
+    </Fragment>
   );
 };
 
