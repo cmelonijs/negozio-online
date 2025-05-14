@@ -8,10 +8,12 @@ const UsersPage = async ({
 }) => {
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
+  const query = resolvedSearchParams.q || ''; // Extract search query
 
   const { data: rawUsers, totalPages } = await getAllUsers({
     limit: 6,
     page: currentPage,
+    query, // Pass the query parameter to filter users
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,7 +28,7 @@ const UsersPage = async ({
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">All Users</h1>
-      <UsersTable users={users} totalPages={totalPages} currentPage={currentPage} />
+      <UsersTable users={users} totalPages={totalPages} currentPage={currentPage} searchQuery={query} />
     </div>
   );
 };

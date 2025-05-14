@@ -6,6 +6,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { hash } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
 import { formatError } from "../utils";
+import { Prisma } from "@prisma/client";
 
 export async function signUpWithCredentials(
   prevState: unknown,
@@ -159,16 +160,30 @@ export async function paymentMethod(formData: FormData) {
   }
 }
 
-export const getAllUsers = async ({ limit, page }: { limit: number; page: number }) => {
+export const getAllUsers = async ({ limit, page, query }: {
+  limit: number;
+  page: number;
+  query?: string
+}) => {
   const skip = (page - 1) * limit;
-
+  // Create where clause if query exists
+  const where = query ? {
+    name: {
+      contains: query,
+      mode: Prisma.QueryMode.insensitive, // Makes the search case-insensitive
+    }
+  } : {};
   const users = await prisma.user.findMany({
     skip,
     take: limit,
+    where,
     orderBy: { createdAt: "desc" },
   });
 
-  const totalCount = await prisma.user.count();
+  // Count should respect the same filter
+  const totalCount = await prisma.user.count({
+    where,
+  });
 
   return {
     data: users,
