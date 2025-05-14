@@ -8,18 +8,30 @@ type PaginationProps = {
   page: number | string;
   totalPages: number;
   urlParamName?: string;
+  extraParams?: Record<string, string>; // Add this prop to keep additional params
 };
 
-const Pagination = ({ page, totalPages, urlParamName }: PaginationProps) => {
+const Pagination = ({ page, totalPages, urlParamName, extraParams = {} }: PaginationProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const handleClick = (btnType: string) => {
     const pageValue = btnType === "next" ? Number(page) + 1 : Number(page) - 1;
-    const newUrl = makeUrlQuery({
+    
+    // Create base URL with the page parameter
+    let newUrl = makeUrlQuery({
       params: searchParams.toString(),
       key: urlParamName || "page",
       value: pageValue.toString(),
+    });
+    
+    // Add any extra parameters to maintain during pagination
+    Object.entries(extraParams).forEach(([key, value]) => {
+      newUrl = makeUrlQuery({
+        params: newUrl.split('?')[1] || '',
+        key,
+        value,
+      });
     });
 
     router.push(newUrl);

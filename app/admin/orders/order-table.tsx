@@ -17,7 +17,17 @@ import {deleteOrder} from "@/lib/actions/order.actions";
 import {Order} from "@/types";
 import {DeleteModal} from "@/components/shared/deleteModalComponent";
 
-const OrdersTable = ({ orders, totalPages, currentPage}: {  orders: Order[]; totalPages: number; currentPage: number }) => {
+const OrdersTable = ({ 
+    orders, 
+    totalPages, 
+    currentPage, 
+    searchQuery = '' 
+}: { 
+    orders: Order[]; 
+    totalPages: number; 
+    currentPage: number;
+    searchQuery?: string; 
+}) => {
 
     const tableHeadersTitle = ["ID", "DATE", "ORDER BY", "TOTAL", "PAID", "DELIVERED", "ACTIONS"];
     const [isPending, startTransition] = useTransition();
@@ -110,7 +120,12 @@ const OrdersTable = ({ orders, totalPages, currentPage}: {  orders: Order[]; tot
             </Table>
 
             <div className="mt-4">
-                <Pagination page={currentPage} totalPages={totalPages} urlParamName="page" />
+                <Pagination 
+                    page={currentPage} 
+                    totalPages={totalPages} 
+                    urlParamName="page" 
+                    extraParams={searchQuery ? { q: searchQuery } : {}}
+                />
             </div>
 
             {orderToDelete && (

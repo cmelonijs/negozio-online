@@ -26,10 +26,12 @@ const UsersTable = ({
   users,
   totalPages,
   currentPage,
+  searchQuery,
 }: {
   users: User[];
   totalPages: number;
   currentPage: number;
+  searchQuery?: string;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
@@ -99,6 +101,7 @@ const UsersTable = ({
           page={currentPage}
           totalPages={totalPages}
           urlParamName="page"
+          extraParams={searchQuery ? { q: searchQuery } : {}}
         />
       </div>
 

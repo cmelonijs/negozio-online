@@ -6,9 +6,13 @@ import {Order} from "@/types";
 const OrdersPage = async ({ searchParams }: { searchParams: Promise<Record<string, string>> }) => {
     const resolvedSearchParams = await searchParams;
     const currentPage = Number(resolvedSearchParams.page) || 1;
+    const query = resolvedSearchParams.q || 'all'; // Extract search query
 
-
-    const { data: ordersData, totalPages } = await getAllOrders({ limit: 10, page: currentPage, query: 'all' });
+    const { data: ordersData, totalPages } = await getAllOrders({ 
+        limit: 10, 
+        page: currentPage, 
+        query 
+    });
 
     const orders: Order[] = ordersData.map((order) => {
         const parsedAddress = typeof order.shippingAddress === 'string'
@@ -49,7 +53,12 @@ const OrdersPage = async ({ searchParams }: { searchParams: Promise<Record<strin
     return (
         <Fragment>
             <h1 className="text-2xl font-bold mb-4">Orders</h1>
-            <OrdersTable orders={orders} totalPages={totalPages} currentPage={currentPage}/>
+            <OrdersTable 
+                orders={orders} 
+                totalPages={totalPages} 
+                currentPage={currentPage} 
+                searchQuery={query !== 'all' ? query : ''} // Pass search query to table
+            />
         </Fragment>
     );
 }
