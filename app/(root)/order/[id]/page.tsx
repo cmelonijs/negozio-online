@@ -9,6 +9,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 import OrderTable from "./order-tabla";
 import { DynamicBreadcrumbs } from "@/components/shared/breadcrumb";
 import MarkAsPaidButton from "@/components/admin/MarkAsPaidBtn";
+import MarkAsDeliveredButton from "@/components/admin/MarkAsDeliveredBtn";
 
 export const metadata: Metadata = {
   title: "Order Details",
@@ -155,6 +156,13 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
                   <MarkAsPaidButton orderId={(await params).id} />
                 </div>
               )}
+
+{isAdmin && isPaid && !isDelivered && (
+  <div className="pt-4">
+    <MarkAsDeliveredButton orderId={(await params).id} />
+  </div>
+)}
+
             </CardContent>
           </Card>
         </div>

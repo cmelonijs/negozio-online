@@ -28,7 +28,7 @@ const MarkAsPaidButton = ({ orderId }: Props) => {
 
   return (
     <Button onClick={handleMarkAsPaid} disabled={isPending}>
-      {isPending ? "Marking..." : "Mark as Paid"}
+      {isPending ? "Updating..." : "Mark as Paid"}
     </Button>
   );
 };
