@@ -95,12 +95,17 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
               ) : (
                 <p>Shipping address not available</p>
               )}
-              <p>
-                <strong>Status:</strong>{" "}
-                {isDelivered && deliveredAt
-                  ? `Delivered at ${new Date(deliveredAt).toLocaleString()}`
-                  : "Not Delivered"}
-              </p>
+              <div className="mt-2">
+                {isDelivered && deliveredAt ? (
+                  <div className="inline-block rounded-md bg-gray-200 text-gray-800 px-3 py-1 text-sm font-medium">
+                    Delivered at {new Date(deliveredAt).toLocaleString()}
+                  </div>
+                ) : (
+                  <div className="inline-block rounded-md bg-red-200 text-red-800 px-3 py-1 text-sm font-medium">
+                    Not Delivered
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -108,12 +113,17 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
             <CardContent className="p-4">
               <h2 className="text-xl pb-4">Payment Method</h2>
               <p>{paymentMethod}</p>
-              <p>
-                <strong>Status:</strong>{" "}
-                {isPaid && paidAt
-                  ? `Paid at ${new Date(paidAt).toLocaleString()}`
-                  : "Not Paid"}
-              </p>
+              <div className="mt-2">
+                {isPaid && paidAt ? (
+                  <div className="inline-block rounded-md bg-gray-200 text-gray-800 px-3 py-1 text-sm font-medium">
+                    Paid at {new Date(paidAt).toLocaleString()}
+                  </div>
+                ) : (
+                  <div className="inline-block rounded-md bg-red-200 text-red-800 px-3 py-1 text-sm font-medium">
+                    Not Paid
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -157,12 +167,11 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
                 </div>
               )}
 
-{isAdmin && isPaid && !isDelivered && (
-  <div className="pt-4">
-    <MarkAsDeliveredButton orderId={(await params).id} />
-  </div>
-)}
-
+              {isAdmin && isPaid && !isDelivered && (
+                <div className="pt-4">
+                  <MarkAsDeliveredButton orderId={(await params).id} />
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
