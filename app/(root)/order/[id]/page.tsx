@@ -15,11 +15,11 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 const OrderDetailsPage = async ({ params }: PageProps) => {
- 
+  const awaitedParams = await params;
   
   const session = await auth();
 
@@ -29,7 +29,7 @@ const role = userId ? await getUserRole(userId) : null;
   console.log("isAdmin", role);
  
 
-  const order = await getOrderById(params.id);
+  const order = await getOrderById(awaitedParams.id);
   if (!order) {
     return <div>Order not found</div>;
   }
@@ -76,7 +76,7 @@ const role = userId ? await getUserRole(userId) : null;
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Order Details</h1>
       <DynamicBreadcrumbs nonClickableSegments={["order"]} />
-      <p>Order ID: {params.id}</p>
+      <p>Order ID: {(await params).id}</p>
 
       <div className="flex flex-col lg:flex-row lg:space-x-6">
         <div className="flex flex-col space-y-6 lg:w-2/3">
@@ -152,7 +152,7 @@ const role = userId ? await getUserRole(userId) : null;
               </div>
               {isAdmin && !isPaid && (
   <div className="pt-4">
-    <MarkAsPaidButton orderId={params.id} />
+    <MarkAsPaidButton orderId={(await params).id} />
   </div>
 )}
             </CardContent>
