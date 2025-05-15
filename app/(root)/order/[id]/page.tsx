@@ -19,7 +19,7 @@ interface PageProps {
 }
 
 const OrderDetailsPage = async ({ params }: PageProps) => {
-  params = await params; 
+ 
   
   const session = await auth();
 
