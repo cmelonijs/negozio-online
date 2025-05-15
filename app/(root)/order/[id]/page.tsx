@@ -1,27 +1,38 @@
 import { Metadata } from "next";
-import OrderTable from "./order-tabla";
+import { auth } from "@/auth";
+import { getUserRole } from "@/lib/actions/user.actions";
+
 import { getOrderById } from "@/lib/actions/order.actions";
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Decimal } from "@prisma/client/runtime/library";
+import OrderTable from "./order-tabla";
 import { DynamicBreadcrumbs } from "@/components/shared/breadcrumb";
+import MarkAsPaidButton from "@/components/admin/MarkAsPaidBtn";
+import MarkAsDeliveredButton from "@/components/admin/MarkAsDeliveredBtn";
 
 export const metadata: Metadata = {
   title: "Order Details",
 };
 
 interface PageProps {
-  params: Promise<{ id: string }>; 
+  params: Promise<{ id: string }>;
 }
 
-const OrderDetailsPage = async ({ params }: Awaited<PageProps>) => {
-  const resolvedParams = await params; 
-  const order = await getOrderById(resolvedParams.id);
+const OrderDetailsPage = async ({ params }: PageProps) => {
+  const awaitedParams = await params;
 
+  const session = await auth();
+
+  const userId = session?.user?.id;
+  const role = userId ? await getUserRole(userId) : null;
+  const isAdmin = role === "admin";
+  console.log("isAdmin", role);
+
+  const order = await getOrderById(awaitedParams.id);
   if (!order) {
     return <div>Order not found</div>;
   }
-
   const {
     shippingAddress,
     paymentMethod,
@@ -60,11 +71,12 @@ const OrderDetailsPage = async ({ params }: Awaited<PageProps>) => {
     deliveredAt: string | null;
   };
 
+  console.log("isPaid", isPaid);
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Order Details</h1>
-      <DynamicBreadcrumbs nonClickableSegments={["order"]}/>
-      <p>Order ID: {resolvedParams.id}</p>
+      <DynamicBreadcrumbs nonClickableSegments={["order"]} />
+      <p>Order ID: {(await params).id}</p>
 
       <div className="flex flex-col lg:flex-row lg:space-x-6">
         <div className="flex flex-col space-y-6 lg:w-2/3">
@@ -75,19 +87,25 @@ const OrderDetailsPage = async ({ params }: Awaited<PageProps>) => {
                 <>
                   <p>{shippingAddress.fullName}</p>
                   <p>
-                    {shippingAddress.streetAddress}, {shippingAddress.city} <br />
+                    {shippingAddress.streetAddress}, {shippingAddress.city}{" "}
+                    <br />
                     {shippingAddress.postalCode}, {shippingAddress.country}
                   </p>
                 </>
               ) : (
                 <p>Shipping address not available</p>
               )}
-              <p>
-                <strong>Status:</strong>{" "}
-                {isDelivered && deliveredAt
-                  ? `Delivered at ${new Date(deliveredAt).toLocaleString()}`
-                  : "Not Delivered"}
-              </p>
+              <div className="mt-2">
+                {isDelivered && deliveredAt ? (
+                  <div className="inline-block rounded-md bg-gray-200 text-gray-800 px-3 py-1 text-sm font-medium">
+                    Delivered at {new Date(deliveredAt).toLocaleString()}
+                  </div>
+                ) : (
+                  <div className="inline-block rounded-md bg-red-200 text-red-800 px-3 py-1 text-sm font-medium">
+                    Not Delivered
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -95,12 +113,17 @@ const OrderDetailsPage = async ({ params }: Awaited<PageProps>) => {
             <CardContent className="p-4">
               <h2 className="text-xl pb-4">Payment Method</h2>
               <p>{paymentMethod}</p>
-              <p>
-                <strong>Status:</strong>{" "}
-                {isPaid && paidAt
-                  ? `Paid at ${new Date(paidAt).toLocaleString()}`
-                  : "Not Paid"}
-              </p>
+              <div className="mt-2">
+                {isPaid && paidAt ? (
+                  <div className="inline-block rounded-md bg-gray-200 text-gray-800 px-3 py-1 text-sm font-medium">
+                    Paid at {new Date(paidAt).toLocaleString()}
+                  </div>
+                ) : (
+                  <div className="inline-block rounded-md bg-red-200 text-red-800 px-3 py-1 text-sm font-medium">
+                    Not Paid
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -111,7 +134,7 @@ const OrderDetailsPage = async ({ params }: Awaited<PageProps>) => {
                 order={OrderItem.map((item) => ({
                   ...item,
                   productId: item.slug,
-                  price: item.price.toString(), // it makes me pass it to string and idk why
+                  price: item.price.toString(),
                 }))}
               />
             </CardContent>
@@ -138,6 +161,17 @@ const OrderDetailsPage = async ({ params }: Awaited<PageProps>) => {
                 <span>Total Price:</span>
                 <span>{formatCurrency(Number(totalPrice))}</span>
               </div>
+              {isAdmin && !isPaid && (
+                <div className="pt-4">
+                  <MarkAsPaidButton orderId={(await params).id} />
+                </div>
+              )}
+
+              {isAdmin && isPaid && !isDelivered && (
+                <div className="pt-4">
+                  <MarkAsDeliveredButton orderId={(await params).id} />
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
