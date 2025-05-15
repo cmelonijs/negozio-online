@@ -20,14 +20,13 @@ interface PageProps {
 
 const OrderDetailsPage = async ({ params }: PageProps) => {
   const awaitedParams = await params;
-  
+
   const session = await auth();
 
   const userId = session?.user?.id;
-const role = userId ? await getUserRole(userId) : null;
+  const role = userId ? await getUserRole(userId) : null;
   const isAdmin = role === "admin";
   console.log("isAdmin", role);
- 
 
   const order = await getOrderById(awaitedParams.id);
   if (!order) {
@@ -71,7 +70,7 @@ const role = userId ? await getUserRole(userId) : null;
     deliveredAt: string | null;
   };
 
-  console.log("isPaid", isPaid)
+  console.log("isPaid", isPaid);
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Order Details</h1>
@@ -87,7 +86,8 @@ const role = userId ? await getUserRole(userId) : null;
                 <>
                   <p>{shippingAddress.fullName}</p>
                   <p>
-                    {shippingAddress.streetAddress}, {shippingAddress.city} <br />
+                    {shippingAddress.streetAddress}, {shippingAddress.city}{" "}
+                    <br />
                     {shippingAddress.postalCode}, {shippingAddress.country}
                   </p>
                 </>
@@ -151,10 +151,10 @@ const role = userId ? await getUserRole(userId) : null;
                 <span>{formatCurrency(Number(totalPrice))}</span>
               </div>
               {isAdmin && !isPaid && (
-  <div className="pt-4">
-    <MarkAsPaidButton orderId={(await params).id} />
-  </div>
-)}
+                <div className="pt-4">
+                  <MarkAsPaidButton orderId={(await params).id} />
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

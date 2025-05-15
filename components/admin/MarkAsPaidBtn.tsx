@@ -20,8 +20,8 @@ const MarkAsPaidButton = ({ orderId }: Props) => {
         await updateOrderToPaid({ orderId });
         toast.success("Order marked as paid");
         router.refresh();
-      } catch  {
-        toast.error( "Failed to mark as paid");
+      } catch {
+        toast.error("Failed to mark as paid");
       }
     });
   };
