@@ -2,6 +2,7 @@ import ProductList from "@/components/shared/product/product-list";
 import { getLatestProducts } from "@/lib/actions/products.actions";
 import CarouselClient from "@/components/shared/carousel";
 import InfoComponent from "@/components/shared/infoComponent";
+import ViewProductsBtn from "@/components/shared/viewProductsBtn";
 
 const HomePage = async () => {
   const latestProducts = await getLatestProducts();
@@ -16,12 +17,11 @@ const HomePage = async () => {
       <div className="carousel">
         <CarouselClient images={images} />
       </div>
-      <div className="space-y-8">
-        <ProductList title="Newest Arrivals" data={latestProducts} />
-      </div>
-      <div className="space-y-8">
-        <InfoComponent />
-      </div>
+      <div className="space-y-10">
+      <ProductList title="Newest Arrivals" data={latestProducts} />
+      <ViewProductsBtn />
+      <InfoComponent />
+    </div>
     </>
   );
 };
