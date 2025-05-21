@@ -3,6 +3,7 @@ import { getLatestProducts } from "@/lib/actions/products.actions";
 import CarouselClient from "@/components/shared/carousel";
 import InfoComponent from "@/components/shared/infoComponent";
 import ViewProductsBtn from "@/components/shared/viewProductsBtn";
+import { CountdownTimer } from "@/components/shared/dealCountdown";
 
 const HomePage = async () => {
   const latestProducts = await getLatestProducts();
@@ -11,6 +12,8 @@ const HomePage = async () => {
     { id: 1, src: "/images/banner-1.jpg", alt: "Banner 1" },
     { id: 2, src: "/images/banner-2.jpg", alt: "Banner 2" },
   ];
+
+  const dealEndDate = new Date("2025-05-31T23:59:59");
 
   return (
     <>
@@ -21,6 +24,12 @@ const HomePage = async () => {
       <ProductList title="Newest Arrivals" data={latestProducts} />
       <ViewProductsBtn />
       <InfoComponent />
+      <div className="flex justify-center mt-8">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-2">Deal ends in:</h2>
+          <CountdownTimer finalDate={dealEndDate} />
+        </div>
+      </div>
     </div>
     </>
   );
