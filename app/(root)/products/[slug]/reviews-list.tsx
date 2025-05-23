@@ -44,7 +44,7 @@ export default function ReviewsList({ productId }: { productId: string }) {
           sessionUserId ? canUserReviewProduct(sessionUserId, productId) : false,
         ]);
 
-        const formattedReviews = (reviewData || []).map((review: any) => ({
+        const formattedReviews = (reviewData || []).map((review) => ({
           ...review,
           rating: Number(review.rating),
         }));
