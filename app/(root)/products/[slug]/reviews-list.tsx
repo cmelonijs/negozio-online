@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,6 +9,8 @@ import {
   getReviewsByProductId,
 } from "@/lib/actions/products.actions";
 import ReviewFormModal from "@/components/shared/review-form-modal";
+import { Button } from "@/components/ui/button";
+
 interface Review {
   id: string;
   title: string;
@@ -22,58 +24,42 @@ interface Review {
 export default function ReviewsList({ productId }: { productId: string }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [canReview, setCanReview] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch reviews
   useEffect(() => {
-    const fetchReviews = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const { data } = await getReviewsByProductId({ productId });
-        setReviews(
-          (data || []).map((review: any) => ({
-            ...review,
-            rating: Number(review.rating),
-          }))
-        );
+        const session = await getSession();
+        const sessionUserId = session?.user?.id || null;
+
+        console.log("Session:", session);
+        setUserId(sessionUserId);
+
+        const [{ data: reviewData }, reviewPermission] = await Promise.all([
+          getReviewsByProductId({ productId }),
+          sessionUserId ? canUserReviewProduct(sessionUserId, productId) : false,
+        ]);
+
+        const formattedReviews = (reviewData || []).map((review: any) => ({
+          ...review,
+          rating: Number(review.rating),
+        }));
+
+        setReviews(formattedReviews);
+        setCanReview(reviewPermission);
       } catch (err) {
-        console.error("Error fetching reviews:", err);
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch reviews")
-        );
+        console.error("Error fetching data:", err);
+        setError(err instanceof Error ? err : new Error("Unknown error"));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchReviews();
-  }, [productId]);
-
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const checkCanReview = async () => {
-      try {
-        const session = await getSession();
-        if (session?.user?.id) {
-          setUserId(session.user.id);
-          const canUserReview = await canUserReviewProduct(
-            session.user.id,
-            productId
-          );
-          setCanReview(canUserReview);
-        } else {
-          setUserId(null);
-          setCanReview(false);
-        }
-      } catch (err) {
-        console.error("Error checking review eligibility:", err);
-        setCanReview(false);
-      }
-    };
-
-    checkCanReview();
+    fetchData();
   }, [productId]);
 
   if (loading) {
@@ -94,50 +80,52 @@ export default function ReviewsList({ productId }: { productId: string }) {
     );
   }
 
-  if (reviews.length === 0) {
-    return (
-      <div className="w-full mt-8">
-        <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
-        {canReview ? (
-          <>
-            <div className="mb-6">
-              <ReviewFormModal productId={productId} isOpen={false} />
-            </div>
-            <p>No reviews yet. Be the first to review this product!</p>
-          </>
-        ) : (
-          <p>No reviews yet. Purchase this product to leave a review!</p>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div className="w-full mt-8">
       <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
+
       {canReview && (
         <div className="mb-6">
-          <ReviewFormModal productId={productId} isOpen={false} />
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="px-4 py-2 bg-yellow-500 text-white rounded "
+          >
+            Leave a Review
+          </Button>
+          <ReviewFormModal
+            productId={productId}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
         </div>
       )}
-      <div className="space-y-4">
-        {reviews.map((review) => (
-          <ReviewItem
-            key={review.id}
-            review={{
-              id: review.id,
-              userName: review.userName,
-              rating: Number(review.rating),
-              title: review.title || "Review",
-              comment: review.content,
-              createdAt: review.date,
-            }}
-            currentUserId={userId}
-            reviewUserId={review.userId}
-            productId={productId}
-          />
-        ))}
-      </div>
+
+      {reviews.length === 0 ? (
+        <p>
+          {canReview
+            ? "No reviews yet. Be the first to review this product!"
+            : "No reviews yet. Purchase this product to leave a review!"}
+        </p>
+      ) : (
+        <div className="space-y-4">
+          {reviews.map((review) => (
+            <ReviewItem
+              key={review.id}
+              review={{
+                id: review.id,
+                userName: review.userName,
+                rating: Number(review.rating),
+                title: review.title || "Review",
+                comment: review.content,
+                createdAt: review.date,
+              }}
+              currentUserId={userId}
+              reviewUserId={review.userId}
+              productId={productId}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
