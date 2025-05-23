@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import ViewProductsBtn from "./viewProductsBtn";
 
 type TimeLeft = {
   days: number;
@@ -40,23 +42,46 @@ export const CountdownTimer = ({ finalDate }: { finalDate: Date }) => {
   const { days, hours, minutes, seconds } = timeLeft;
 
   return (
-    <div className="flex gap-4 text-center text-lg md:text-2xl font-semibold">
-      <div>
-        <div>{days}</div>
-        <div className="text-sm">Days</div>
+  <div className="w-full px-4 py-8">
+    <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-screen-xl mx-auto">
+      <div className="flex flex-col gap-6 text-center md:text-left max-w-xl">
+        <h2 className="text-4xl font-bold">Deal ends in:</h2>
+        <p className="text-base md:text-lg text-gray-300">
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquam,
+          tenetur quibusdam? Facilis reiciendis ea, dolores vitae quas cum
+          cumque quis veniam neque consequuntur repudiandae commodi labore amet
+          ratione soluta accusamus?
+        </p>
+
+        <div className="flex justify-center md:justify-start gap-6 text-center text-2xl font-semibold">
+          <div>
+            <div>{days}</div>
+            <div className="text-sm">Days</div>
+          </div>
+          <div>
+            <div>{hours}</div>
+            <div className="text-sm">Hours</div>
+          </div>
+          <div>
+            <div>{minutes}</div>
+            <div className="text-sm">Minutes</div>
+          </div>
+          <div>
+            <div>{seconds}</div>
+            <div className="text-sm">Seconds</div>
+          </div>
+        </div>
+            <ViewProductsBtn />
       </div>
-      <div>
-        <div>{hours}</div>
-        <div className="text-sm">Hours</div>
-      </div>
-      <div>
-        <div>{minutes}</div>
-        <div className="text-sm">Minutes</div>
-      </div>
-      <div>
-        <div>{seconds}</div>
-        <div className="text-sm">Seconds</div>
-      </div>
+      <Image
+        src="/images/sample-products/p6-1.jpg"
+          width={600}
+        height={600}
+        alt="Product Deal"
+        className="w-full max-w-sm h-auto rounded-xl object-cover"
+      />
     </div>
-  );
-};
+  </div>
+);
+
+}

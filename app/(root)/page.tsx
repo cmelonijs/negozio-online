@@ -24,13 +24,9 @@ const HomePage = async () => {
       <ProductList title="Newest Arrivals" data={latestProducts} />
       <ViewProductsBtn />
       <InfoComponent />
-      <div className="flex justify-center mt-8">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">Deal ends in:</h2>
-          <CountdownTimer finalDate={dealEndDate} />
-        </div>
+      <CountdownTimer finalDate={dealEndDate} />
       </div>
-    </div>
+   
     </>
   );
 };
