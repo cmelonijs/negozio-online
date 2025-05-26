@@ -28,7 +28,7 @@
     "@react-email/components": "^0.0.34",
     "@stripe/react-stripe-js": "^3.5.0",
     "@stripe/stripe-js": "^6.1.0",
-    "@uploadthing/react": "^7.3.0",
+    "@uploadthing/react": "^7.3.1",
     "bcrypt-ts-edge": "^3.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -51,7 +51,7 @@
     "stripe": "^17.7.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
-    "uploadthing": "^7.5.2",
+    "uploadthing": "^7.7.2",
     "vaul": "^1.1.2",
     "ws": "^8.18.1",
     "zod": "^3.24.2"
